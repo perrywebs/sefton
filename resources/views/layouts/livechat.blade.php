@@ -1,4 +1,5 @@
 {{-- Add your livechat, telegram code here  --}}
+<script src="//code.jivosite.com/widget/CyrK1uz65U" async></script>
 
 {{--Start whatsapp code --}}
 

@@ -624,7 +624,7 @@
             }, 800);
         };
     </script>
-    
+    @include('layouts.livechat')
     @yield('scripts')
 </body>
 </html>

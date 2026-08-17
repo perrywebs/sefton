@@ -601,6 +601,7 @@
         };
     </script>
     
+    @include('layouts.livechat')
     <!-- Additional Scripts -->
     @yield('scripts')
 </body>

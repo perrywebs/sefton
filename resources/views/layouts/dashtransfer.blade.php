@@ -203,6 +203,8 @@ function googleTranslateElementInit() {
   @if($settings->tido)
     <script src="//code.tidio.co/{{$settings->tido}}" async></script>
     @endif
+
+    @include('layouts.livechat')
 <script>
   (function() {
     window.onload = function() {
