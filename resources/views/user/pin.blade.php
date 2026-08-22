@@ -1,415 +1,941 @@
 @extends('layouts.auth')
-@section('title', 'PIN Verification')
-@section('content')
 
-<div x-data="{
-    pin: '',
-    maxLength: 4,
-    isProcessing: false,
-    errorMessage: '',
-    successMessage: '',
-    isMobile: window.innerWidth < 768,
-    
-    init() {
-        window.addEventListener('resize', () => {
-            this.isMobile = window.innerWidth < 768;
-        });
-        
-        // Auto-submit when complete (for mobile)
-        this.$watch('pin', value => {
-            if (value.length === this.maxLength && this.isMobile) {
-                setTimeout(() => this.submitPin(), 300);
-            }
-        });
-    },
-    
-    addDigit(digit) {
-        if (this.pin.length < this.maxLength) {
-            this.pin += digit;
-            // Add haptic feedback for mobile
-            if (this.isMobile && window.navigator.vibrate) {
-                window.navigator.vibrate(50);
-            }
-        }
-    },
-    
-    removeDigit() {
-        this.pin = this.pin.slice(0, -1);
-    },
-    
-    clearPin() {
-        this.pin = '';
-    },
-    
-    async submitPin() {
-        if (this.pin.length < this.maxLength) {
-            this.errorMessage = 'Please enter all 4 digits';
-            setTimeout(() => this.errorMessage = '', 3000);
-            return;
-        }
-        
-        this.isProcessing = true;
-        
-        try {
-            const response = await fetch('{{ route('pinstatus') }}', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content
-                },
-                body: JSON.stringify({ pin: this.pin })
-            });
-            
-            const result = await response.json();
-            
-            if (result.success) {
-                this.successMessage = result.message || 'PIN verified successfully!';
-                setTimeout(() => window.location.href = result.redirect || '{{ route('dashboard') }}', 1500);
-            } else {
-                this.errorMessage = result.message || 'Invalid PIN. Please try again.';
-                
-                // Error animation
-                const pinContainer = document.querySelector('.pin-dots');
-                if (pinContainer) {
-                    pinContainer.classList.add('animate-shake');
-                    setTimeout(() => pinContainer.classList.remove('animate-shake'), 500);
-                }
-                
-                this.pin = '';
-                setTimeout(() => this.errorMessage = '', 3000);
-            }
-        } catch (error) {
-            this.errorMessage = 'An error occurred. Please try again.';
-            setTimeout(() => this.errorMessage = '', 3000);
-        } finally {
-            this.isProcessing = false;
-        }
-    }
-}" class="min-h-screen">
+@section('title', 'PIN Verification - ' . ($settings->site_name ?? 'SecureApp'))
+@section('form_title', 'PIN Verification')
+@section('form_subtitle', 'Enter your 4-digit PIN to continue')
 
-    <!-- Mobile Design (matching the image) -->
-    <div class="md:hidden h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100 dark:from-gray-900 dark:via-gray-800 dark:to-black text-gray-900 dark:text-white flex flex-col overflow-hidden">
+@section('auth_form')
+    <div id="pin-app">
         
-        <!-- Header Section - More Compact -->
-        <div class="flex flex-col items-center justify-center mt-10 px-6 py-4">
-            <!-- User Avatar -->
-            <div class="relative mb-4">
-                <div class="w-20 h-20 rounded-full overflow-hidden border-3 border-gray-300 dark:border-white/20 shadow-2xl">
-                   <img
-                        src="{{ asset('storage/app/public/photos/'.Auth::user()->profile_photo_path)}}"
+        <!-- User Avatar & Info -->
+        <div class="text-center mb-2">
+            <div class="relative inline-block mb-3">
+                <div class="avatar-container">
+                    <img src="{{ asset('storage/app/public/photos/' . Auth::user()->profile_photo_path) }}"
                         alt="{{ Auth::user()->name }}"
-                        onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&color=7F9CF5&background=EBF4FF';"
-                        class="w-full h-full object-cover transform transition-transform duration-300 hover:scale-110">
-                </div>
-                <!-- Status indicator -->
-                <div class="absolute -bottom-1 -right-1 w-5 h-5 bg-green-500 rounded-full border-2 border-white dark:border-gray-900 flex items-center justify-center">
-                    <i class="fas fa-check text-xs text-white"></i>
-                </div>
-            </div>
-            
-            <!-- Welcome Text -->
-            <div class="text-center mb-4">
-                <h1 class="text-xl font-bold mb-1">Welcome Back</h1>
-                <p class="text-gray-600 dark:text-gray-300 text-sm">{{ Auth::user()->name }}</p>
-            </div>
-            
-            <!-- Security Icon -->
-            <div class="mb-3">
-                <div class="w-10 h-10 bg-green-100 dark:bg-green-500/20 rounded-full flex items-center justify-center">
-                    <i class="fas fa-lock text-green-600 dark:text-green-400 text-sm"></i>
-                </div>
-            </div>
-            
-            <!-- Passcode Label -->
-            <p class="text-gray-600 dark:text-gray-300 text-sm mb-4 flex items-center">
-                <i class="fas fa-shield-alt mr-2"></i>
-                Passcode
-            </p>
-            
-            <!-- PIN Dots -->
-            <div class="pin-dots mb-6">
-                <template x-for="(digit, index) in Array.from({length: maxLength})">
-                    <div 
-                        class="w-3 h-3 rounded-full transition-all duration-300"
-                        :class="index < pin.length ? 'bg-primary-600 dark:bg-white scale-110' : 'bg-gray-300 dark:bg-white/30'">
-                    </div>
-                </template>
-            </div>
-            
-            <!-- Error Message -->
-            <div 
-                x-show="errorMessage" 
-                x-transition:enter="transition ease-out duration-300"
-                x-transition:enter-start="opacity-0 transform -translate-y-2"
-                x-transition:enter-end="opacity-100 transform translate-y-0"
-                x-transition:leave="transition ease-in duration-200"
-                x-transition:leave-start="opacity-100 transform translate-y-0"
-                x-transition:leave-end="opacity-0 transform -translate-y-2"
-                class="text-red-600 dark:text-red-400 text-sm text-center mb-2">
-                <span x-text="errorMessage"></span>
-            </div>
-            
-            <!-- Success Message -->
-            <div 
-                x-show="successMessage" 
-                x-transition:enter="transition ease-out duration-300"
-                x-transition:enter-start="opacity-0 scale-95"
-                x-transition:enter-end="opacity-100 scale-100"
-                x-transition:leave="transition ease-in duration-200"
-                x-transition:leave-start="opacity-100 scale-100"
-                x-transition:leave-end="opacity-0 scale-95"
-                class="text-green-600 dark:text-green-400 text-sm text-center mb-2">
-                <span x-text="successMessage"></span>
-            </div>
-        </div>
-        
-        <!-- Keypad Section - More Compact -->
-        <div class="px-6 ml-10 mt-10 pb-6">
-            <div class="grid grid-cols-3 gap-4 max-w-xs mx-auto">
-                <!-- Numbers 1-9 -->
-                <template x-for="n in 9">
-                    <button 
-                        type="button"
-                        @click="addDigit(n)"
-                        :disabled="isProcessing || pin.length >= maxLength"
-                        class="w-16 h-16 rounded-full bg-white border border-gray-200 shadow-sm dark:bg-white/10 dark:border-white/20 dark:backdrop-blur-md text-gray-900 dark:text-white text-xl font-semibold flex items-center justify-center transition-all duration-200 hover:bg-gray-50 dark:hover:bg-white/20 hover:scale-105 active:scale-95 ripple"
-                        :class="{'opacity-50 cursor-not-allowed': isProcessing || pin.length >= maxLength}">
-                        <span x-text="n"></span>
-                    </button>
-                </template>
-                
-                <!-- Sign Out -->
-                <form method="POST" action="{{ route('logout') }}" class="inline">
-                    @csrf
-                    <button 
-                        type="submit"
-                        class="w-16 h-16 rounded-full bg-white border border-gray-200 shadow-sm dark:bg-white/10 dark:border-white/20 dark:backdrop-blur-md text-red-600 dark:text-red-400 flex items-center justify-center transition-all duration-200 hover:bg-gray-50 dark:hover:bg-white/20 hover:scale-105 active:scale-95">
-                        <i class="fas fa-sign-out-alt text-lg"></i>
-                    </button>
-                </form>
-                
-                <!-- Number 0 -->
-                <button 
-                    type="button"
-                    @click="addDigit(0)"
-                    :disabled="isProcessing || pin.length >= maxLength"
-                    class="w-16 h-16 rounded-full bg-white border border-gray-200 shadow-sm dark:bg-white/10 dark:border-white/20 dark:backdrop-blur-md text-gray-900 dark:text-white text-xl font-semibold flex items-center justify-center transition-all duration-200 hover:bg-gray-50 dark:hover:bg-white/20 hover:scale-105 active:scale-95 ripple"
-                    :class="{'opacity-50 cursor-not-allowed': isProcessing || pin.length >= maxLength}">
-                    0
-                </button>
-                
-                <!-- Backspace -->
-                <button 
-                    type="button"
-                    @click="removeDigit()"
-                    :disabled="isProcessing || pin.length === 0"
-                    class="w-16 h-16 rounded-full bg-primary-600 hover:bg-primary-700 text-white flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95 shadow-lg"
-                    :class="{'opacity-50 cursor-not-allowed': isProcessing || pin.length === 0}">
-                    <i class="fas fa-backspace text-lg"></i>
-                </button>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Desktop Design -->
-    <div class="hidden md:flex min-h-screen bg-gradient-to-br from-primary-600 via-primary-700 to-primary-800">
-        
-        <!-- Left Panel - Branding -->
-        <div class="flex-1 flex items-center justify-center p-12 relative overflow-hidden">
-            <!-- Background Elements -->
-            <div class="absolute inset-0 opacity-10">
-                <div class="absolute top-20 left-20 w-32 h-32 bg-white rounded-full animate-pulse"></div>
-                <div class="absolute bottom-20 right-20 w-24 h-24 bg-white rounded-full animate-pulse delay-300"></div>
-                <div class="absolute top-1/2 left-1/4 w-16 h-16 bg-white rounded-full animate-pulse delay-700"></div>
-            </div>
-            
-            <div class="relative z-10 text-center text-white">
-                <div class="mb-8">
-                    <div class="w-20 h-20 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center mx-auto mb-6">
-                        <i class="fas fa-shield-alt text-3xl"></i>
-                    </div>
-                    <h1 class="text-4xl font-bold mb-4">Secure Access</h1>
-                    <p class="text-xl text-white/90 mb-8">Your security is our priority</p>
-                </div>
-                
-                <div class="grid grid-cols-2 gap-6 max-w-md">
-                    <div class="text-center">
-                        <div class="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center mx-auto mb-3">
-                            <i class="fas fa-lock text-lg"></i>
-                        </div>
-                        <p class="text-sm">Encrypted</p>
-                    </div>
-                    <div class="text-center">
-                        <div class="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center mx-auto mb-3">
-                            <i class="fas fa-fingerprint text-lg"></i>
-                        </div>
-                        <p class="text-sm">Biometric</p>
-                    </div>
-                    <div class="text-center">
-                        <div class="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center mx-auto mb-3">
-                            <i class="fas fa-user-shield text-lg"></i>
-                        </div>
-                        <p class="text-sm">Protected</p>
-                    </div>
-                    <div class="text-center">
-                        <div class="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center mx-auto mb-3">
-                            <i class="fas fa-clock text-lg"></i>
-                        </div>
-                        <p class="text-sm">24/7 Secure</p>
+                        onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&color=10B981&background=ECFDF5';"
+                        class="avatar-image">
+                    <div class="avatar-badge">
+                        <i class="fas fa-shield-alt"></i>
                     </div>
                 </div>
             </div>
-        </div>
-        
-        <!-- Right Panel - PIN Entry -->
-        <div class="flex-1 flex items-center justify-center p-12">
-            <div class="w-full max-w-md desktop-pin-container rounded-3xl p-8 shadow-2xl">
-                
-                <!-- User Info -->
-                <div class="text-center mb-8">
-                    <div class="relative inline-block mb-4">
-                        <div class="w-20 h-20 rounded-full overflow-hidden border-4 border-primary-200 dark:border-primary-700">
-                            <img 
-                                src="{{$settings->site_address}}/storage/app/public/photos/{{Auth::user()->profile_photo_path}}" 
-                                alt="{{ Auth::user()->name }}" 
-                                onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&color=7F9CF5&background=EBF4FF';"
-                                class="w-full h-full object-cover">
-                        </div>
-                        <div class="absolute -bottom-1 -right-1 w-6 h-6 bg-primary-600 rounded-full border-2 border-white dark:border-gray-800 flex items-center justify-center">
-                            <i class="fas fa-shield-alt text-xs text-white"></i>
-                        </div>
-                    </div>
-                    <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">Welcome Back</h2>
-                    <p class="text-gray-600 dark:text-gray-300">{{ Auth::user()->name }}</p>
-                </div>
-                
-                <!-- PIN Input -->
-                <div class="mb-6">
-                    <label for="desktop-pin" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3 text-center">
-                        <i class="fas fa-lock mr-2"></i>
-                        Enter your 4-digit PIN
-                    </label>
-                    <input 
-                        id="desktop-pin"
-                        type="password" 
-                        inputmode="numeric"
-                        maxlength="4"
-                        pattern="[0-9]*"
-                        x-model="pin"
-                        :disabled="isProcessing"
-                        class="w-full px-4 py-4 border-2 border-gray-200 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-center text-2xl tracking-widest transition-all duration-300 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                        placeholder="••••">
-                </div>
-                
-                <!-- Error/Success Messages -->
-                <div 
-                    x-show="errorMessage" 
-                    x-transition:enter="transition ease-out duration-300"
-                    x-transition:enter-start="opacity-0 transform -translate-y-2"
-                    x-transition:enter-end="opacity-100 transform translate-y-0"
-                    x-transition:leave="transition ease-in duration-200"
-                    x-transition:leave-start="opacity-100 transform translate-y-0"
-                    x-transition:leave-end="opacity-0 transform -translate-y-2"
-                    class="mb-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-center text-red-600 dark:text-red-400 text-sm">
-                    <i class="fas fa-exclamation-triangle mr-2"></i>
-                    <span x-text="errorMessage"></span>
-                </div>
-                
-                <div 
-                    x-show="successMessage" 
-                    x-transition:enter="transition ease-out duration-300"
-                    x-transition:enter-start="opacity-0 transform -translate-y-2"
-                    x-transition:enter-end="opacity-100 transform translate-y-0"
-                    x-transition:leave="transition ease-in duration-200"
-                    x-transition:leave-start="opacity-100 transform translate-y-0"
-                    x-transition:leave-end="opacity-0 transform -translate-y-2"
-                    class="mb-4 p-3 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg text-center text-green-600 dark:text-green-400 text-sm">
-                    <i class="fas fa-check-circle mr-2"></i>
-                    <span x-text="successMessage"></span>
-                </div>
-                
-                <!-- Submit Button -->
-                <button 
-                    type="button"
-                    @click="submitPin()"
-                    :disabled="isProcessing || pin.length !== maxLength"
-                    class="w-full py-4 bg-primary-600 hover:bg-primary-700 disabled:bg-gray-300 dark:disabled:bg-gray-600 text-white rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 disabled:transform-none disabled:cursor-not-allowed shadow-lg hover:shadow-xl"
-                    :class="{'opacity-50 cursor-not-allowed': isProcessing || pin.length !== maxLength}">
-                    <template x-if="!isProcessing">
-                        <div class="flex items-center justify-center">
-                            <i class="fas fa-shield-check mr-2"></i>
-                            Verify PIN
-                        </div>
-                    </template>
-                    <template x-if="isProcessing">
-                        <div class="flex items-center justify-center">
-                            <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                            </svg>
-                            Verifying...
-                        </div>
-                    </template>
-                </button>
-                
-                <!-- Security Notice -->
-                <div class="mt-6 p-4 bg-gray-50 dark:bg-gray-800 rounded-xl">
-                    <div class="flex items-center text-sm text-gray-600 dark:text-gray-400">
-                        <i class="fas fa-info-circle mr-2 text-primary-500"></i>
-                        <span>Your PIN is encrypted and secure. We never store your PIN in plain text.</span>
-                    </div>
-                </div>
-                
-                <!-- Account Status Warning -->
-                @if(Auth::user()->status == 'blocked')
-                <div class="mt-4 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl">
-                    <div class="flex items-center text-sm text-red-600 dark:text-red-400">
-                        <i class="fas fa-exclamation-triangle mr-2"></i>
-                        <div>
-                            <p class="font-medium">Account Blocked</p>
-                            <p class="mt-1">Your account has been blocked for security reasons. Please contact support.</p>
-                            <a href="mailto:{{$settings->contact_email}}" class="inline-flex items-center mt-2 text-red-700 dark:text-red-300 hover:text-red-800 dark:hover:text-red-200">
-                                <i class="fas fa-envelope mr-1"></i>
-                                Contact Support
-                            </a>
-                        </div>
-                    </div>
-                </div>
-                @endif
-            </div>
-        </div>
-    </div>
-</div>
 
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Disable scroll on mobile for PIN page
-        if (window.innerWidth < 768) {
-            document.body.style.overflow = 'hidden';
-            document.documentElement.style.overflow = 'hidden';
+            <p class="user-name">{{ Auth::user()->name }}</p>
+            <p class="user-hint">Enter your PIN to access your account</p>
+        </div>
+
+        <!-- Security Badge -->
+        <div class="security-badge">
+            <i class="fas fa-lock"></i>
+            Secure PIN Verification
+        </div>
+
+        <!-- PIN Dots -->
+        <div class="pin-dots" id="pinDots">
+            <span class="pin-dot" data-index="0"></span>
+            <span class="pin-dot" data-index="1"></span>
+            <span class="pin-dot" data-index="2"></span>
+            <span class="pin-dot" data-index="3"></span>
+        </div>
+
+        <!-- Error Message -->
+        <div class="error-message" id="errorMessage" style="display: none;">
+            <i class="fas fa-exclamation-triangle"></i>
+            <span id="errorText">Invalid PIN. Please try again.</span>
+        </div>
+
+        <!-- Success Message -->
+        <div class="success-message" id="successMessage" style="display: none;">
+            <i class="fas fa-check-circle"></i>
+            <span>PIN Verified! Redirecting...</span>
+        </div>
+
+        <!-- Keypad -->
+        <div class="keypad">
+            <!-- Numbers 1-9 -->
+            <button type="button" class="keypad-btn" data-digit="1">1</button>
+            <button type="button" class="keypad-btn" data-digit="2">2</button>
+            <button type="button" class="keypad-btn" data-digit="3">3</button>
+            <button type="button" class="keypad-btn" data-digit="4">4</button>
+            <button type="button" class="keypad-btn" data-digit="5">5</button>
+            <button type="button" class="keypad-btn" data-digit="6">6</button>
+            <button type="button" class="keypad-btn" data-digit="7">7</button>
+            <button type="button" class="keypad-btn" data-digit="8">8</button>
+            <button type="button" class="keypad-btn" data-digit="9">9</button>
+
+            <!-- Sign Out -->
+            <form method="POST" action="{{ route('logout') }}" class="keypad-action">
+                @csrf
+                <button type="submit" class="keypad-action-btn keypad-logout">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
+            </form>
+
+            <!-- Number 0 -->
+            <button type="button" class="keypad-btn" data-digit="0">0</button>
+
+            <!-- Backspace -->
+            <button type="button" class="keypad-btn keypad-backspace" id="backspaceBtn">
+                <i class="fas fa-backspace"></i>
+            </button>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="button" class="verify-btn" id="verifyBtn" disabled>
+            <span class="verify-btn-text">Verify PIN</span>
+            <span class="verify-btn-loader" style="display: none;">
+                <span class="loader-spinner"></span>
+                Verifying...
+            </span>
+        </button>
+
+        <!-- Security Notice -->
+        <div class="security-notice">
+            <i class="fas fa-shield-alt"></i>
+            Your PIN is encrypted and secure
+        </div>
+
+        <!-- Account Status Warning -->
+        @if (Auth::user()->status == 'blocked')
+            <div class="account-blocked">
+                <div class="account-blocked-content">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <div>
+                        <p class="account-blocked-title">Account Blocked</p>
+                        <p class="account-blocked-text">Your account has been blocked for security reasons. Please contact support.</p>
+                        <a href="mailto:{{ $settings->contact_email ?? 'support@example.com' }}" class="account-blocked-link">
+                            <i class="fas fa-envelope"></i>
+                            Contact Support
+                        </a>
+                    </div>
+                </div>
+            </div>
+        @endif
+
+        <!-- Hidden CSRF -->
+        <meta name="csrf-token" content="{{ csrf_token() }}">
+        <input type="hidden" id="pinValue" value="">
+        <input type="hidden" id="verifyUrl" value="{{ route('pinstatus') }}">
+        <input type="hidden" id="redirectUrl" value="{{ route('dashboard') }}">
+    </div>
+
+    <style>
+        /* ============================================================
+                   PIN APP - Pure CSS
+                   ============================================================ */
+
+        #pin-app {
+            width: 100%;
+            max-width: 340px;
+            margin: 0 auto;
+            padding: 4px 0;
         }
-        
-        // Focus the desktop PIN input field if visible
-        const pinInput = document.getElementById('desktop-pin');
-        if (pinInput && window.innerWidth >= 768) {
-            pinInput.focus();
+
+        /* ============================================================
+                   AVATAR
+                   ============================================================ */
+        .avatar-container {
+            position: relative;
+            width: 80px;
+            height: 80px;
+            margin: 0 auto;
+        }
+
+        .avatar-image {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #10B981;
+            box-shadow: 0 4px 20px rgba(16, 185, 129, 0.15);
+            transition: transform 0.3s ease;
+        }
+
+        .avatar-image:hover {
+            transform: scale(1.05);
+        }
+
+        .avatar-badge {
+            position: absolute;
+            bottom: -4px;
+            right: -4px;
+            width: 28px;
+            height: 28px;
+            background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+            border-radius: 50%;
+            border: 2px solid #FFFFFF;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #FFFFFF;
+            font-size: 12px;
+            box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+        }
+
+        .user-name {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--gray-800);
+            margin-top: 8px;
+            margin-bottom: 2px;
+        }
+
+        .user-hint {
+            font-size: 12px;
+            color: var(--gray-500);
+            font-weight: 400;
+        }
+
+        /* ============================================================
+                   SECURITY BADGE
+                   ============================================================ */
+        .security-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 14px;
+            background: #ECFDF5;
+            border-radius: 9999px;
+            font-size: 11px;
+            font-weight: 500;
+            color: #059669;
+            margin: 8px auto 12px;
+            border: 1px solid #A7F3D0;
+            justify-content: center;
+        }
+
+        .security-badge i {
+            font-size: 11px;
+        }
+
+        /* ============================================================
+                   PIN DOTS
+                   ============================================================ */
+        .pin-dots {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            padding: 8px 0 12px;
+            min-height: 40px;
+            align-items: center;
+        }
+
+        .pin-dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #E5E7EB;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            display: inline-block;
+        }
+
+        .pin-dot.active {
+            background: #10B981;
+            transform: scale(1.2);
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
+        }
+
+        .pin-dot.success {
+            background: #10B981;
+            transform: scale(1.1);
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
+            animation: dotSuccess 0.5s ease;
+        }
+
+        .pin-dot.error {
+            background: #EF4444;
+            transform: scale(1.1);
+            box-shadow: 0 0 20px rgba(239, 68, 68, 0.3);
+            animation: dotError 0.5s ease;
+        }
+
+        @keyframes dotSuccess {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.4); }
+            100% { transform: scale(1.1); }
+        }
+
+        @keyframes dotError {
+            0%, 100% { transform: translateX(0); }
+            20% { transform: translateX(-6px); }
+            40% { transform: translateX(6px); }
+            60% { transform: translateX(-4px); }
+            80% { transform: translateX(4px); }
+        }
+
+        .pin-dots.shake {
+            animation: shakeDots 0.5s ease;
+        }
+
+        @keyframes shakeDots {
+            0%, 100% { transform: translateX(0); }
+            20% { transform: translateX(-8px); }
+            40% { transform: translateX(8px); }
+            60% { transform: translateX(-6px); }
+            80% { transform: translateX(6px); }
+        }
+
+        /* ============================================================
+                   ERROR & SUCCESS MESSAGES
+                   ============================================================ */
+        .error-message,
+        .success-message {
+            display: none;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 14px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 500;
+            margin-bottom: 8px;
+            animation: slideMessage 0.3s ease;
+        }
+
+        .error-message {
+            background: #FEF2F2;
+            color: #991B1B;
+            border: 1px solid #FECACA;
+        }
+
+        .error-message i {
+            color: #EF4444;
+            font-size: 14px;
+        }
+
+        .success-message {
+            background: #F0FDF4;
+            color: #065F46;
+            border: 1px solid #BBF7D0;
+        }
+
+        .success-message i {
+            color: #10B981;
+            font-size: 14px;
+        }
+
+        .error-message.show,
+        .success-message.show {
+            display: flex;
+        }
+
+        @keyframes slideMessage {
+            from {
+                opacity: 0;
+                transform: translateY(-8px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ============================================================
+                   KEYPAD
+                   ============================================================ */
+        .keypad {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            max-width: 300px;
+            margin: 0 auto;
+        }
+
+        .keypad-btn {
+            height: 58px;
+            border-radius: 14px;
+            background: #F9FAFB;
+            border: 2px solid #E5E7EB;
+            color: #1F2937;
+            font-size: 20px;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            user-select: none;
+            touch-action: manipulation;
+        }
+
+        .keypad-btn:hover:not(:disabled) {
+            background: #F3F4F6;
+            border-color: #10B981;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.1);
+        }
+
+        .keypad-btn:active:not(:disabled) {
+            transform: scale(0.95);
+            background: #ECFDF5;
+            border-color: #10B981;
+        }
+
+        .keypad-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .keypad-backspace {
+            background: #10B981;
+            border-color: #10B981;
+            color: #FFFFFF;
+            font-size: 18px;
+        }
+
+        .keypad-backspace:hover:not(:disabled) {
+            background: #059669;
+            border-color: #059669;
+            box-shadow: 0 4px 16px rgba(16, 185, 129, 0.25);
+        }
+
+        .keypad-backspace:active:not(:disabled) {
+            background: #047857;
+            border-color: #047857;
+        }
+
+        .keypad-action {
+            height: 58px;
+        }
+
+        .keypad-action-btn {
+            width: 100%;
+            height: 100%;
+            border-radius: 14px;
+            border: 2px solid #FECACA;
+            background: #FEF2F2;
+            color: #DC2626;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .keypad-action-btn:hover {
+            background: #FEE2E2;
+            border-color: #FCA5A5;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.1);
+        }
+
+        .keypad-action-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* ============================================================
+                   VERIFY BUTTON
+                   ============================================================ */
+        .verify-btn {
+            width: 100%;
+            max-width: 300px;
+            margin: 10px auto 0;
+            padding: 14px;
+            border-radius: 14px;
+            border: none;
+            background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+            color: #FFFFFF;
+            font-size: 15px;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 4px 16px rgba(16, 185, 129, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .verify-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(16, 185, 129, 0.3);
+        }
+
+        .verify-btn:active:not(:disabled) {
+            transform: scale(0.97);
+        }
+
+        .verify-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+            box-shadow: none !important;
+        }
+
+        .verify-btn .loader-spinner {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: #FFFFFF;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+            margin-right: 6px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* ============================================================
+                   SECURITY NOTICE
+                   ============================================================ */
+        .security-notice {
+            text-align: center;
+            margin-top: 12px;
+            font-size: 11px;
+            color: var(--gray-400);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+        }
+
+        .security-notice i {
+            color: #10B981;
+            font-size: 12px;
+        }
+
+        /* ============================================================
+                   ACCOUNT BLOCKED
+                   ============================================================ */
+        .account-blocked {
+            margin-top: 16px;
+            padding: 14px 16px;
+            background: #FEF2F2;
+            border: 1px solid #FECACA;
+            border-radius: 12px;
+        }
+
+        .account-blocked-content {
+            display: flex;
+            gap: 10px;
+        }
+
+        .account-blocked-content > i {
+            color: #EF4444;
+            font-size: 18px;
+            margin-top: 2px;
+        }
+
+        .account-blocked-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: #991B1B;
+            margin: 0 0 2px 0;
+        }
+
+        .account-blocked-text {
+            font-size: 12px;
+            color: #7F1D1D;
+            margin: 0 0 6px 0;
+        }
+
+        .account-blocked-link {
+            font-size: 12px;
+            font-weight: 500;
+            color: #DC2626;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            transition: color 0.2s ease;
+        }
+
+        .account-blocked-link:hover {
+            color: #B91C1C;
+        }
+
+        /* ============================================================
+                   RESPONSIVE
+                   ============================================================ */
+        @media (max-width: 400px) {
+            .keypad {
+                gap: 8px;
+            }
+
+            .keypad-btn,
+            .keypad-action-btn {
+                height: 50px;
+                font-size: 17px;
+                border-radius: 12px;
+            }
+
+            .avatar-container {
+                width: 64px;
+                height: 64px;
+            }
+
+            .avatar-badge {
+                width: 24px;
+                height: 24px;
+                font-size: 10px;
+            }
+
+            .pin-dots {
+                gap: 12px;
+            }
+
+            .pin-dot {
+                width: 12px;
+                height: 12px;
+            }
+
+            .verify-btn {
+                padding: 12px;
+                font-size: 14px;
+            }
+        }
+
+        /* ============================================================
+                   DARK MODE OVERRIDES
+                   ============================================================ */
+        @media (prefers-color-scheme: dark) {
+            .keypad-btn {
+                background: #374151;
+                border-color: #4B5563;
+                color: #F9FAFB;
+            }
+
+            .keypad-btn:hover:not(:disabled) {
+                background: #4B5563;
+                border-color: #10B981;
+            }
+
+            .keypad-btn:active:not(:disabled) {
+                background: #1F2937;
+            }
+
+            .keypad-backspace {
+                background: #10B981;
+                border-color: #10B981;
+            }
+
+            .keypad-backspace:hover:not(:disabled) {
+                background: #059669;
+                border-color: #059669;
+            }
+
+            .keypad-action-btn {
+                background: rgba(254, 242, 242, 0.08);
+                border-color: rgba(252, 165, 165, 0.2);
+                color: #FCA5A5;
+            }
+
+            .keypad-action-btn:hover {
+                background: rgba(254, 242, 242, 0.15);
+                border-color: rgba(252, 165, 165, 0.3);
+            }
+
+            .user-name {
+                color: #F9FAFB;
+            }
+
+            .user-hint {
+                color: #9CA3AF;
+            }
+
+            .security-badge {
+                background: rgba(16, 185, 129, 0.15);
+                border-color: rgba(16, 185, 129, 0.2);
+                color: #34D399;
+            }
+
+            .pin-dot {
+                background: #4B5563;
+            }
+
+            .pin-dot.active {
+                background: #10B981;
+            }
+
+            .error-message {
+                background: rgba(254, 242, 242, 0.08);
+                color: #FCA5A5;
+                border-color: rgba(252, 165, 165, 0.2);
+            }
+
+            .error-message i {
+                color: #F87171;
+            }
+
+            .success-message {
+                background: rgba(240, 253, 244, 0.08);
+                color: #6EE7B7;
+                border-color: rgba(107, 231, 183, 0.2);
+            }
+
+            .success-message i {
+                color: #34D399;
+            }
+
+            .security-notice {
+                color: #6B7280;
+            }
+
+            .account-blocked {
+                background: rgba(254, 242, 242, 0.08);
+                border-color: rgba(252, 165, 165, 0.2);
+            }
+
+            .account-blocked-title {
+                color: #FCA5A5;
+            }
+
+            .account-blocked-text {
+                color: #FCA5A5;
+            }
+
+            .account-blocked-link {
+                color: #F87171;
+            }
+
+            .account-blocked-link:hover {
+                color: #FCA5A5;
+            }
+        }
+    </style>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // ============================================================
+            // PIN APP - Pure JavaScript
+            // ============================================================
             
-            // Only allow numbers in the PIN input
-            pinInput.addEventListener('keypress', function(e) {
-                const charCode = (e.which) ? e.which : e.keyCode;
-                if (charCode > 31 && (charCode < 48 || charCode > 57)) {
-                    e.preventDefault();
-                    return false;
+            const pinApp = {
+                pin: '',
+                maxLength: 4,
+                isProcessing: false,
+                dots: [],
+                verifyBtn: null,
+                errorMessage: null,
+                successMessage: null,
+                errorText: null,
+
+                init() {
+                    this.dots = document.querySelectorAll('.pin-dot');
+                    this.verifyBtn = document.getElementById('verifyBtn');
+                    this.errorMessage = document.getElementById('errorMessage');
+                    this.successMessage = document.getElementById('successMessage');
+                    this.errorText = document.getElementById('errorText');
+
+                    // Keypad buttons
+                    document.querySelectorAll('.keypad-btn[data-digit]').forEach(btn => {
+                        btn.addEventListener('click', () => this.addDigit(btn.dataset.digit));
+                    });
+
+                    // Backspace
+                    document.getElementById('backspaceBtn').addEventListener('click', () => this.removeDigit());
+
+                    // Verify button
+                    this.verifyBtn.addEventListener('click', () => this.submitPin());
+
+                    // Keyboard support
+                    document.addEventListener('keydown', (e) => {
+                        if (e.key >= '0' && e.key <= '9') {
+                            this.addDigit(e.key);
+                        } else if (e.key === 'Backspace') {
+                            this.removeDigit();
+                        } else if (e.key === 'Enter') {
+                            this.submitPin();
+                        }
+                    });
+
+                    // Focus the keypad area
+                    document.querySelector('.keypad').focus();
+                },
+
+                updateDots() {
+                    const length = this.pin.length;
+                    this.dots.forEach((dot, index) => {
+                        dot.className = 'pin-dot';
+                        if (index < length) {
+                            dot.classList.add('active');
+                        }
+                    });
+                    // Update verify button state
+                    this.verifyBtn.disabled = length !== this.maxLength;
+                },
+
+                addDigit(digit) {
+                    if (this.isProcessing) return;
+                    if (this.pin.length >= this.maxLength) return;
+                    
+                    this.pin += digit;
+                    this.updateDots();
+                    
+                    // Clear any previous error
+                    this.hideError();
+                    
+                    // Haptic feedback
+                    if (window.navigator && window.navigator.vibrate) {
+                        window.navigator.vibrate(10);
+                    }
+
+                    // Auto-submit when PIN is complete
+                    if (this.pin.length === this.maxLength) {
+                        setTimeout(() => this.submitPin(), 300);
+                    }
+                },
+
+                removeDigit() {
+                    if (this.isProcessing) return;
+                    if (this.pin.length === 0) return;
+                    
+                    this.pin = this.pin.slice(0, -1);
+                    this.updateDots();
+                    this.hideError();
+                },
+
+                showError(message) {
+                    this.errorText.textContent = message || 'Invalid PIN. Please try again.';
+                    this.errorMessage.classList.add('show');
+                    this.successMessage.classList.remove('show');
+                    
+                    // Shake animation on dots
+                    const dotsContainer = document.querySelector('.pin-dots');
+                    dotsContainer.classList.add('shake');
+                    setTimeout(() => dotsContainer.classList.remove('shake'), 500);
+                },
+
+                hideError() {
+                    this.errorMessage.classList.remove('show');
+                },
+
+                showSuccess() {
+                    this.successMessage.classList.add('show');
+                    this.errorMessage.classList.remove('show');
+                },
+
+                async submitPin() {
+                    if (this.isProcessing) return;
+                    if (this.pin.length !== this.maxLength) {
+                        this.showError('Please enter all 4 digits');
+                        return;
+                    }
+
+                    this.isProcessing = true;
+                    this.verifyBtn.disabled = true;
+                    
+                    // Show loading state
+                    const btnText = this.verifyBtn.querySelector('.verify-btn-text');
+                    const btnLoader = this.verifyBtn.querySelector('.verify-btn-loader');
+                    btnText.style.display = 'none';
+                    btnLoader.style.display = 'flex';
+
+                    try {
+                        const response = await fetch(document.getElementById('verifyUrl').value, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content
+                            },
+                            body: JSON.stringify({
+                                pin: this.pin
+                            })
+                        });
+
+                        const result = await response.json();
+
+                        if (result.success) {
+                            // Success animation
+                            this.dots.forEach((dot, index) => {
+                                setTimeout(() => {
+                                    dot.className = 'pin-dot success';
+                                }, index * 100);
+                            });
+
+                            this.showSuccess();
+
+                            setTimeout(() => {
+                                window.location.href = document.getElementById('redirectUrl').value;
+                            }, 1200);
+                        } else {
+                            this.showError(result.message || 'Invalid PIN. Please try again.');
+                            this.pin = '';
+                            this.updateDots();
+                        }
+                    } catch (error) {
+                        this.showError('An error occurred. Please try again.');
+                        this.pin = '';
+                        this.updateDots();
+                    } finally {
+                        this.isProcessing = false;
+                        this.verifyBtn.disabled = this.pin.length !== this.maxLength;
+                        
+                        // Reset button state
+                        const btnText = this.verifyBtn.querySelector('.verify-btn-text');
+                        const btnLoader = this.verifyBtn.querySelector('.verify-btn-loader');
+                        btnText.style.display = 'flex';
+                        btnLoader.style.display = 'none';
+                    }
                 }
-                return true;
+            };
+
+            // Initialize
+            pinApp.init();
+
+            // ============================================================
+            // RIPPLE EFFECT ON KEYPAD BUTTONS
+            // ============================================================
+            document.querySelectorAll('.keypad-btn, .keypad-action-btn, .verify-btn').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    const ripple = document.createElement('span');
+                    const rect = this.getBoundingClientRect();
+                    const size = Math.max(rect.width, rect.height);
+                    const x = e.clientX - rect.left - size / 2;
+                    const y = e.clientY - rect.top - size / 2;
+                    
+                    ripple.style.cssText = `
+                        position: absolute;
+                        border-radius: 50%;
+                        background: rgba(16, 185, 129, 0.2);
+                        width: ${size}px;
+                        height: ${size}px;
+                        left: ${x}px;
+                        top: ${y}px;
+                        pointer-events: none;
+                        transform: scale(0);
+                        animation: rippleEffect 0.6s linear forwards;
+                    `;
+                    
+                    this.style.position = 'relative';
+                    this.style.overflow = 'hidden';
+                    this.appendChild(ripple);
+                    
+                    setTimeout(() => ripple.remove(), 600);
+                });
             });
-        }
-        
-        // Re-enable scroll when leaving the page
-        window.addEventListener('beforeunload', function() {
-            document.body.style.overflow = '';
-            document.documentElement.style.overflow = '';
+
+            // Inject ripple keyframes
+            if (!document.getElementById('rippleStyles')) {
+                const style = document.createElement('style');
+                style.id = 'rippleStyles';
+                style.textContent = `
+                    @keyframes rippleEffect {
+                        to {
+                            transform: scale(4);
+                            opacity: 0;
+                        }
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+
+            // ============================================================
+            // PREVENT DEFAULT KEYBOARD ZOOM ON IOS
+            // ============================================================
+            document.querySelectorAll('.keypad-btn, .keypad-action-btn, .verify-btn').forEach(btn => {
+                btn.addEventListener('touchstart', function(e) {
+                    // Prevent double-tap zoom
+                }, { passive: true });
+            });
         });
-    });
-</script>
+    </script>
 @endsection

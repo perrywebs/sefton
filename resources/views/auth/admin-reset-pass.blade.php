@@ -1,65 +1,92 @@
-@extends('layouts.guest')
-@section('title', 'Reset your password')
-@section('content')
-    <section class=" auth">
-        <div class="container">
-            <div class="pb-3 row justify-content-center">
+@extends('layouts.auth')
 
-                <div class="col-12 col-md-6 col-lg-6 col-sm-10 col-xl-6">
+@section('title', 'Admin Reset Password - ' . ($settings->site_name ?? 'SecureApp'))
+@section('form_title', 'Admin Password Reset')
+@section('form_subtitle', 'Enter the token and set a new password')
 
-                    <div class="bg-dark shadow card login-page roundedd border-1 ">
-                        <div class="card-body">
-                            <x-error-alert />
-                            <x-danger-alert/>
-                            <x-success-alert />
-                            <div class="mb-2 row flex-between-center">
-                                <div class="col-auto">
-                                    <h5>Reset your account password?</h5>
-                                </div>
-                            </div>
-                            <form method="POST" action="{{ route('restpass') }}">
-                                @csrf
-                                <div class="mb-3">
-                                    <input class="form-control" name="email" type="email" value="{{ $email }}"
-                                        placeholder="Email address" readonly />
-                                    @error('email')
-                                        <small class="text-danger">{{ $message }}</small>
-                                    @enderror
-                                </div>
-                                <div class="mb-3">
-                                    <input class="form-control" type="number" name="token" placeholder="Token" />
-                                    @error('token')
-                                        <small class="text-danger">{{ $message }}</small>
-                                    @enderror
-                                </div>
-                                <div class="mb-3">
-                                    <input class="form-control" name="password" type="password"
-                                        placeholder="New Password" />
-                                    @error('password')
-                                        <small class="text-danger">{{ $message }}</small>
-                                    @enderror
-                                </div>
-                                <div class="mb-3">
-                                    <input class="form-control" name="password_confirmation" type="password"
-                                        placeholder="New Password Confirmation" />
-                                    @error('password_confirmation')
-                                        <small class="text-danger">{{ $message }}</small>
-                                    @enderror
-                                </div>
+@section('auth_form')
+    <form method="POST" action="{{ route('restpass') }}" class="auth-form">
+        @csrf
 
-                                <div class="mb-3"><button class="mt-3 btn btn-primary d-block w-100" type="submit"
-                                        name="submit">Reset Password</button></div>
-                            </form>
-                        </div>
-                    </div>
-                    <!---->
-                </div>
-                <!--end col-->
+        <!-- Email (Readonly) -->
+        <div class="form-group">
+            <label for="email">
+                <i class="fas fa-envelope"></i> Email Address
+            </label>
+            <div class="input-wrapper">
+                <i class="fas fa-envelope input-icon"></i>
+                <input id="email" type="email" name="email" value="{{ $email ?? old('email') }}" readonly required>
             </div>
-            <!--end row-->
+            @error('email')
+                <p style="color: #EF4444; font-size: 12px; margin-top: 4px;">
+                    <i class="fas fa-exclamation-circle"></i> {{ $message }}
+                </p>
+            @enderror
         </div>
-        <!--end container-->
-    </section>
-    <!--end section-->
 
+        <!-- Token -->
+        <div class="form-group">
+            <label for="token">
+                <i class="fas fa-key"></i> Reset Token
+            </label>
+            <div class="input-wrapper">
+                <i class="fas fa-key input-icon"></i>
+                <input id="token" type="number" name="token" placeholder="Enter your reset token" required>
+            </div>
+            @error('token')
+                <p style="color: #EF4444; font-size: 12px; margin-top: 4px;">
+                    <i class="fas fa-exclamation-circle"></i> {{ $message }}
+                </p>
+            @enderror
+        </div>
+
+        <!-- Password -->
+        <div class="form-group">
+            <label for="password">
+                <i class="fas fa-lock"></i> New Password
+            </label>
+            <div class="input-wrapper">
+                <i class="fas fa-lock input-icon"></i>
+                <input id="password" type="password" name="password" placeholder="Min 8 characters" required
+                    autocomplete="new-password">
+                <button type="button" class="toggle-password" onclick="togglePasswordVisibility(this)"
+                    aria-label="Toggle password visibility">
+                    <i class="fas fa-eye"></i>
+                </button>
+            </div>
+            @error('password')
+                <p style="color: #EF4444; font-size: 12px; margin-top: 4px;">
+                    <i class="fas fa-exclamation-circle"></i> {{ $message }}
+                </p>
+            @enderror
+        </div>
+
+        <!-- Confirm Password -->
+        <div class="form-group">
+            <label for="password_confirmation">
+                <i class="fas fa-check-circle"></i> Confirm Password
+            </label>
+            <div class="input-wrapper">
+                <i class="fas fa-check-circle input-icon"></i>
+                <input id="password_confirmation" type="password" name="password_confirmation"
+                    placeholder="Confirm your password" required autocomplete="new-password">
+            </div>
+            @error('password_confirmation')
+                <p style="color: #EF4444; font-size: 12px; margin-top: 4px;">
+                    <i class="fas fa-exclamation-circle"></i> {{ $message }}
+                </p>
+            @enderror
+        </div>
+
+        <!-- Submit -->
+        <button type="submit" class="submit-btn">
+            <span>Reset Password</span>
+            <i class="fas fa-redo"></i>
+        </button>
+
+        <!-- Back to Admin Login -->
+        <div class="alternate-action">
+            Remember your password? <a href="{{ route('adminloginform') }}">Admin Login</a>
+        </div>
+    </form>
 @endsection

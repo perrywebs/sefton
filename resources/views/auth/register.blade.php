@@ -1,808 +1,1326 @@
-@extends('layouts.guest2')
+@extends('layouts.auth')
 
-@section('title', 'Create Account')
-@section('content')
+@section('title', 'Create Account - ' . ($settings->site_name ?? 'SecureApp'))
+@section('form_title', 'Get Started')
+@section('form_subtitle', 'Create your account in minutes')
 
-<div class="flex flex-col lg:flex-row min-h-screen">
-    <!-- Left Side - Branding & Illustration (Desktop Only) -->
-    <div class="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-primary-600 via-primary-700 to-primary-800 dark:from-primary-700 dark:via-primary-800 dark:to-primary-900 relative overflow-hidden">
-        <!-- Animated Background Elements -->
-        <div class="absolute inset-0 overflow-hidden">
-            <!-- Floating Shapes -->
-            <div class="absolute top-1/4 left-1/4 w-48 h-48 bg-white/10 rounded-full backdrop-blur-sm floating-slow"></div>
-            <div class="absolute bottom-1/3 right-1/4 w-72 h-72 bg-white/5 rounded-full backdrop-blur-sm floating"></div>
-            <div class="absolute top-2/3 left-1/3 w-32 h-32 bg-white/15 rounded-full backdrop-blur-sm floating-slower"></div>
-            
-            <!-- Grid Pattern -->
-            <div class="absolute inset-0 opacity-20" style="background-image: radial-gradient(rgba(255,255,255,0.15) 1px, transparent 1px); background-size: 25px 25px;"></div>
-        </div>
+@section('auth_form')
+    <div id="register-app">
         
-        <!-- Content -->
-        <div class="relative flex flex-col justify-center items-center w-full h-full text-white p-8 z-10">
-            <!-- Logo with Glow Effect -->
-            <div class="mb-6 relative">
-                <div class="absolute inset-0 bg-white/20 rounded-2xl blur-lg"></div>
-                <div class="relative bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/20">
-                    <img src="{{ asset('storage/app/public/' . $settings->logo) }}" alt="Logo" class="h-12">
+        <!-- Progress Steps -->
+        <div class="register-progress">
+            <div class="progress-steps">
+                <div class="progress-step active" data-step="1">
+                    <div class="step-circle">1</div>
+                    <span class="step-label">Personal</span>
+                </div>
+                <div class="progress-step" data-step="2">
+                    <div class="step-circle">2</div>
+                    <span class="step-label">Contact</span>
+                </div>
+                <div class="progress-step" data-step="3">
+                    <div class="step-circle">3</div>
+                    <span class="step-label">Account</span>
+                </div>
+                <div class="progress-step" data-step="4">
+                    <div class="step-circle">4</div>
+                    <span class="step-label">Security</span>
                 </div>
             </div>
-            
-            <!-- Title -->
-            <h1 class="text-3xl font-black mb-3 text-center bg-gradient-to-r from-white via-white to-white/80 bg-clip-text text-transparent">
-                Join {{ $settings->site_name }}
-            </h1>
-            <h2 class="text-lg font-semibold mb-6 text-center text-white/90">
-                Create Your Banking Account
-            </h2>
-            
-            <!-- Description -->
-            <p class="text-sm mb-8 max-w-md text-center text-white/80 leading-relaxed">
-                Start your financial journey with {{ $settings->site_name }}. Secure, fast, and reliable banking at your fingertips.
-            </p>
-            
-            <!-- Features Grid -->
-            <div class="grid grid-cols-2 gap-4 w-full max-w-md">
-                <div class="group flex items-center space-x-3 p-3 rounded-xl bg-white/10 backdrop-blur-sm border border-white/20 hover:bg-white/15 transition-all duration-300">
-                    <div class="flex-shrink-0 w-8 h-8 rounded-xl bg-white/20 flex items-center justify-center group-hover:scale-110 transition-transform">
-                        <i class="fas fa-shield-alt text-sm"></i>
-                    </div>
-                    <div>
-                        <h3 class="text-sm font-semibold">Secure Platform</h3>
-                        <p class="text-xs text-white/70">Bank-grade security</p>
-                    </div>
-                </div>
-                <div class="group flex items-center space-x-3 p-3 rounded-xl bg-white/10 backdrop-blur-sm border border-white/20 hover:bg-white/15 transition-all duration-300">
-                    <div class="flex-shrink-0 w-8 h-8 rounded-xl bg-white/20 flex items-center justify-center group-hover:scale-110 transition-transform">
-                        <i class="fas fa-bolt text-sm"></i>
-                    </div>
-                    <div>
-                        <h3 class="text-sm font-semibold">Fast Transfers</h3>
-                        <p class="text-xs text-white/70">Instant payments</p>
-                    </div>
-                </div>
-                <div class="group flex items-center space-x-3 p-3 rounded-xl bg-white/10 backdrop-blur-sm border border-white/20 hover:bg-white/15 transition-all duration-300">
-                    <div class="flex-shrink-0 w-8 h-8 rounded-xl bg-white/20 flex items-center justify-center group-hover:scale-110 transition-transform">
-                        <i class="fas fa-clock text-sm"></i>
-                    </div>
-                    <div>
-                        <h3 class="text-sm font-semibold">24/7 Access</h3>
-                        <p class="text-xs text-white/70">Always available</p>
-                    </div>
-                </div>
-                <div class="group flex items-center space-x-3 p-3 rounded-xl bg-white/10 backdrop-blur-sm border border-white/20 hover:bg-white/15 transition-all duration-300">
-                    <div class="flex-shrink-0 w-8 h-8 rounded-xl bg-white/20 flex items-center justify-center group-hover:scale-110 transition-transform">
-                        <i class="fas fa-globe text-sm"></i>
-                    </div>
-                    <div>
-                        <h3 class="text-sm font-semibold">Global Banking</h3>
-                        <p class="text-xs text-white/70">Worldwide access</p>
-                    </div>
-                </div>
+            <div class="progress-bar-track">
+                <div class="progress-bar-fill" id="progressFill" style="width: 25%;"></div>
             </div>
         </div>
-    </div>
 
-    <!-- Right Side - Registration Form -->
-    <div class="w-full lg:w-1/2 flex flex-col justify-center items-center p-3 lg:p-8 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-sm">
-        <div class="w-full max-w-sm">
-            <!-- Mobile Header -->
-            <div class="lg:hidden text-center mb-6">
-                <div class="relative inline-block mb-3 mt-10">
-                    <div class="absolute inset-0 bg-primary-500/20 rounded-2xl blur-lg"></div>
-                    <div class="relative bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-2xl p-3 border border-gray-200/50 dark:border-gray-700/50">
-                        <img src="{{ asset('storage/app/public/' . $settings->logo) }}" alt="Logo" class="h-10 mx-auto">
+        <form action="{{ route('register') }}" method="post" id="registration-form" novalidate>
+            @csrf
+
+            <!-- Step 1: Personal Information -->
+            <div class="register-step" id="step-1">
+                <div class="step-header">
+                    <div class="step-icon">
+                        <i class="fas fa-user"></i>
                     </div>
-                </div>
-                <h1 class="text-xl font-bold text-gray-900 dark:text-white mb-1">Create Account</h1>
-                <p class="text-sm text-gray-600 dark:text-gray-400">Join {{ $settings->site_name }} today</p>
-            </div>
-            
-            <!-- Enhanced Alerts -->
-            @if (Session::has('status'))
-                <div class="bg-red-50/90 dark:bg-red-900/30 backdrop-blur-sm border border-red-200/50 dark:border-red-800/50 text-red-700 dark:text-red-300 p-3 mb-4 rounded-xl" role="alert">
-                    <div class="flex items-center">
-                        <i class="fas fa-exclamation-triangle mr-2 text-red-500 text-sm"></i>
-                        <p class="text-sm font-medium">{{ session('status') }}</p>
-                    </div>
-                </div>
-            @endif
-            
-            @if ($errors->any())
-                <div class="bg-red-50/90 dark:bg-red-900/30 backdrop-blur-sm border border-red-200/50 dark:border-red-800/50 text-red-700 dark:text-red-300 p-3 mb-4 rounded-xl" role="alert">
-                    <div class="flex items-center mb-2">
-                        <i class="fas fa-exclamation-triangle mr-2 text-red-500 text-sm"></i>
-                        <p class="text-sm font-medium">Please fix the following errors:</p>
-                    </div>
-                    <ul class="text-sm space-y-1 ml-6">
-                        @foreach ($errors->all() as $error)
-                            <li class="flex items-center">
-                                <i class="fas fa-dot-circle mr-2 text-red-400 text-xs"></i>
-                                {{ $error }}
-                            </li>
-                        @endforeach
-                    </ul>
-                </div>
-            @endif
-            
-            <!-- Registration Card -->
-            <div class="bg-white/90 dark:bg-gray-800/90 backdrop-blur-xl rounded-2xl shadow-2xl border border-gray-200/50 dark:border-gray-700/50 overflow-hidden">
-                <!-- Progress Header -->
-                <div class="px-6 pt-6 pb-4 border-b border-gray-100/50 dark:border-gray-700/50">
-                    <div class="flex justify-between items-center mb-3">
-                        <h2 class="text-lg font-bold text-gray-900 dark:text-white">Create Account</h2>
-                        <span class="text-xs font-medium text-gray-500 dark:text-gray-400">Step <span id="current-step">1</span> of 4</span>
-                    </div>
-                    
-                    <!-- Progress Bar -->
-                    <div class="h-1.5 w-full bg-gray-200 dark:bg-gray-600 rounded-full overflow-hidden mb-2">
-                        <div id="progress-bar" class="h-full bg-gradient-to-r from-primary-600 to-primary-700 rounded-full transition-all duration-500 ease-in-out" style="width: 25%"></div>
-                    </div>
-                    
-                    <!-- Step Indicators -->
-                    <div class="flex justify-between text-xs">
-                        <div class="flex flex-col items-center">
-                            <div id="step-1-indicator" class="w-6 h-6 rounded-full bg-primary-600 text-white flex items-center justify-center mb-1">
-                                <i class="fas fa-user text-xs"></i>
-                            </div>
-                            <span class="text-primary-600 dark:text-primary-400 font-medium">Personal</span>
-                        </div>
-                        <div class="flex flex-col items-center">
-                            <div id="step-2-indicator" class="w-6 h-6 rounded-full bg-gray-300 dark:bg-gray-600 text-gray-500 flex items-center justify-center mb-1">
-                                <i class="fas fa-envelope text-xs"></i>
-                            </div>
-                            <span class="text-gray-500 dark:text-gray-400">Contact</span>
-                        </div>
-                        <div class="flex flex-col items-center">
-                            <div id="step-3-indicator" class="w-6 h-6 rounded-full bg-gray-300 dark:bg-gray-600 text-gray-500 flex items-center justify-center mb-1">
-                                <i class="fas fa-university text-xs"></i>
-                            </div>
-                            <span class="text-gray-500 dark:text-gray-400">Account</span>
-                        </div>
-                        <div class="flex flex-col items-center">
-                            <div id="step-4-indicator" class="w-6 h-6 rounded-full bg-gray-300 dark:bg-gray-600 text-gray-500 flex items-center justify-center mb-1">
-                                <i class="fas fa-lock text-xs"></i>
-                            </div>
-                            <span class="text-gray-500 dark:text-gray-400">Security</span>
-                        </div>
-                    </div>
+                    <h3 class="step-title">Personal Information</h3>
+                    <p class="step-desc">Tell us about yourself</p>
                 </div>
                 
-                <!-- Form Container -->
-                <div class="px-6 pb-6 pt-4">
-                    <form action="{{ route('register') }}" method="post" id="registration-form">
-                        @csrf
-                        
-                        <!-- Step 1: Personal Information -->
-                        <div id="step-1" class="step-content">
-                            <div class="text-center mb-4">
-                                <div class="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-primary-100/50 dark:bg-primary-800/50 backdrop-blur-sm mb-3">
-                                    <i class="fas fa-user text-lg text-primary-600 dark:text-primary-300"></i>
-                                </div>
-                                <h3 class="text-sm font-bold text-gray-900 dark:text-white mb-1">Personal Information</h3>
-                                <p class="text-xs text-gray-600 dark:text-gray-400">Tell us about yourself</p>
-                            </div>
-                            
-                            <div class="space-y-3">
-                                <!-- First Name -->
-                                <div class="space-y-1">
-                                    <label for="name" class="block text-xs font-semibold text-gray-700 dark:text-gray-300">First Name *</label>
-                                    <div class="relative">
-                                        <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none z-10">
-                                            <i class="fas fa-user text-gray-400 text-sm"></i>
-                                        </div>
-                                        <input 
-                                            type="text" 
-                                            id="name" 
-                                            name="name" 
-                                            value="{{ old('name') }}"
-                                            class="w-full pl-10 pr-3 py-3 border border-gray-300/50 dark:border-gray-600/50 rounded-xl bg-gray-50/50 dark:bg-gray-700/50 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500 backdrop-blur-sm transition-all duration-300 text-sm" 
-                                            placeholder="John" 
-                                            required>
-                                    </div>
-                                </div>
-                                
-                                <!-- Last Name -->
-                                <div class="space-y-1">
-                                    <label for="lastname" class="block text-xs font-semibold text-gray-700 dark:text-gray-300">Last Name *</label>
-                                    <div class="relative">
-                                        <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none z-10">
-                                            <i class="fas fa-user text-gray-400 text-sm"></i>
-                                        </div>
-                                        <input 
-                                            type="text" 
-                                            id="lastname" 
-                                            name="lastname" 
-                                            value="{{ old('lastname') }}"
-                                            class="w-full pl-10 pr-3 py-3 border border-gray-300/50 dark:border-gray-600/50 rounded-xl bg-gray-50/50 dark:bg-gray-700/50 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500 backdrop-blur-sm transition-all duration-300 text-sm" 
-                                            placeholder="Smith" 
-                                            required>
-                                    </div>
-                                </div>
-                                
-                                <!-- Middle Name -->
-                                <div class="space-y-1">
-                                    <label for="middlename" class="block text-xs font-semibold text-gray-700 dark:text-gray-300">Middle Name</label>
-                                    <div class="relative">
-                                        <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none z-10">
-                                            <i class="fas fa-user text-gray-400 text-sm"></i>
-                                        </div>
-                                        <input 
-                                            type="text" 
-                                            id="middlename" 
-                                            name="middlename" 
-                                            value="{{ old('middlename') }}"
-                                            class="w-full pl-10 pr-3 py-3 border border-gray-300/50 dark:border-gray-600/50 rounded-xl bg-gray-50/50 dark:bg-gray-700/50 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500 backdrop-blur-sm transition-all duration-300 text-sm" 
-                                            placeholder="David">
-                                    </div>
-                                </div>
-                                
-                                <!-- Username -->
-                                <div class="space-y-1">
-                                    <label for="username" class="block text-xs font-semibold text-gray-700 dark:text-gray-300">Username *</label>
-                                    <div class="relative">
-                                        <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none z-10">
-                                            <i class="fas fa-at text-gray-400 text-sm"></i>
-                                        </div>
-                                        <input 
-                                            type="text" 
-                                            id="username" 
-                                            name="username" 
-                                            value="{{ old('username') }}"
-                                            class="w-full pl-10 pr-3 py-3 border border-gray-300/50 dark:border-gray-600/50 rounded-xl bg-gray-50/50 dark:bg-gray-700/50 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500 backdrop-blur-sm transition-all duration-300 text-sm" 
-                                            placeholder="johnsmith123" 
-                                            required>
-                                    </div>
-                                </div>
-                            </div>
+                <div class="form-grid">
+                    <div class="form-field">
+                        <label for="name">First Name <span class="required">*</span></label>
+                        <div class="field-wrapper">
+                            <i class="fas fa-user field-icon"></i>
+                            <input 
+                                type="text" 
+                                id="name" 
+                                name="name" 
+                                value="{{ old('name') }}"
+                                data-required="true"
+                                placeholder="John"
+                            >
                         </div>
-                        
-                        <!-- Step 2: Contact Information -->
-                        <div id="step-2" class="step-content" style="display: none;">
-                            <div class="text-center mb-4">
-                                <div class="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-primary-100/50 dark:bg-primary-800/50 backdrop-blur-sm mb-3">
-                                    <i class="fas fa-envelope text-lg text-primary-600 dark:text-primary-300"></i>
-                                </div>
-                                <h3 class="text-sm font-bold text-gray-900 dark:text-white mb-1">Contact Information</h3>
-                                <p class="text-xs text-gray-600 dark:text-gray-400">How can we reach you?</p>
-                            </div>
-                            
-                            <div class="space-y-3">
-                                <!-- Email -->
-                                <div class="space-y-1">
-                                    <label for="email" class="block text-xs font-semibold text-gray-700 dark:text-gray-300">Email Address *</label>
-                                    <div class="relative">
-                                        <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none z-10">
-                                            <i class="fas fa-envelope text-gray-400 text-sm"></i>
-                                        </div>
-                                        <input 
-                                            type="email" 
-                                            id="email" 
-                                            name="email" 
-                                            value="{{ old('email') }}"
-                                            class="w-full pl-10 pr-3 py-3 border border-gray-300/50 dark:border-gray-600/50 rounded-xl bg-gray-50/50 dark:bg-gray-700/50 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500 backdrop-blur-sm transition-all duration-300 text-sm" 
-                                            placeholder="john@example.com" 
-                                            required>
-                                    </div>
-                                </div>
-                                
-                                <!-- Phone -->
-                                <div class="space-y-1">
-                                    <label for="phone" class="block text-xs font-semibold text-gray-700 dark:text-gray-300">Phone Number *</label>
-                                    <div class="relative">
-                                        <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none z-10">
-                                            <i class="fas fa-phone text-gray-400 text-sm"></i>
-                                        </div>
-                                        <input 
-                                            type="tel" 
-                                            id="phone" 
-                                            name="phone" 
-                                            value="{{ old('phone') }}"
-                                            class="w-full pl-10 pr-3 py-3 border border-gray-300/50 dark:border-gray-600/50 rounded-xl bg-gray-50/50 dark:bg-gray-700/50 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500 backdrop-blur-sm transition-all duration-300 text-sm" 
-                                            placeholder="+1 (234) 567-8901" 
-                                            required>
-                                    </div>
-                                </div>
-                                
-                                <!-- Country -->
-                                <div class="space-y-1">
-                                    <label for="country" class="block text-xs font-semibold text-gray-700 dark:text-gray-300">Country *</label>
-                                    <div class="relative">
-                                        <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none z-10">
-                                            <i class="fas fa-globe text-gray-400 text-sm"></i>
-                                        </div>
-                                        <select 
-                                            id="country" 
-                                            name="country" 
-                                            class="w-full pl-10 pr-8 py-3 border border-gray-300/50 dark:border-gray-600/50 rounded-xl bg-gray-50/50 dark:bg-gray-700/50 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500 backdrop-blur-sm transition-all duration-300 text-sm appearance-none" 
-                                            required>
-                                            <option value="" disabled selected>Select Country</option>
-                                            @include('auth.countries')
-                                        </select>
-                                        <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                                            <i class="fas fa-chevron-down text-gray-400 text-sm"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Step 3: Account Setup -->
-                        <div id="step-3" class="step-content" style="display: none;">
-                            <div class="text-center mb-4">
-                                <div class="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-primary-100/50 dark:bg-primary-800/50 backdrop-blur-sm mb-3">
-                                    <i class="fas fa-university text-lg text-primary-600 dark:text-primary-300"></i>
-                                </div>
-                                <h3 class="text-sm font-bold text-gray-900 dark:text-white mb-1">Account Setup</h3>
-                                <p class="text-xs text-gray-600 dark:text-gray-400">Choose your account preferences</p>
-                            </div>
-                            
-                            <div class="space-y-3">
-                                <!-- Currency -->
-                                <div class="space-y-1">
-                                    <label for="curr" class="block text-xs font-semibold text-gray-700 dark:text-gray-300">Currency *</label>
-                                    <div class="relative">
-                                        <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none z-10">
-                                            <i class="fas fa-dollar-sign text-gray-400 text-sm"></i>
-                                        </div>
-                                        <select 
-                                            id="curr" 
-                                            name="curr" 
-                                            class="w-full pl-10 pr-8 py-3 border border-gray-300/50 dark:border-gray-600/50 rounded-xl bg-gray-50/50 dark:bg-gray-700/50 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500 backdrop-blur-sm transition-all duration-300 text-sm appearance-none" 
-                                            required>
-                                            <option value="" disabled selected>Select Currency</option>
-                                            @include('partials.currencies')
-                                        </select>
-                                        <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                                            <i class="fas fa-chevron-down text-gray-400 text-sm"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <!-- Account Type -->
-                                <div class="space-y-1">
-                                    <label for="accounttype" class="block text-xs font-semibold text-gray-700 dark:text-gray-300">Account Type *</label>
-                                    <div class="relative">
-                                        <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none z-10">
-                                            <i class="fas fa-university text-gray-400 text-sm"></i>
-                                        </div>
-                                        <select 
-                                            id="accounttype" 
-                                            name="accounttype" 
-                                            class="w-full pl-10 pr-8 py-3 border border-gray-300/50 dark:border-gray-600/50 rounded-xl bg-gray-50/50 dark:bg-gray-700/50 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500 backdrop-blur-sm transition-all duration-300 text-sm appearance-none" 
-                                            required>
-                                            <option value="" disabled selected>Select Account Type</option>
-                                            <option value="Checking Account">Checking Account</option>
-                                            <option value="Savings Account">Savings Account</option>
-                                            <option value="Fixed Deposit Account">Fixed Deposit Account</option>
-                                            <option value="Current Account">Current Account</option>
-                                            <option value="Business Account">Business Account</option>
-                                            <option value="Investment Account">Investment Account</option>
-                                        </select>
-                                        <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                                            <i class="fas fa-chevron-down text-gray-400 text-sm"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <!-- Transaction PIN -->
-                                <div class="space-y-1">
-                                    <label for="pin" class="block text-xs font-semibold text-gray-700 dark:text-gray-300">Transaction PIN *</label>
-                                    <div class="relative">
-                                        <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none z-10">
-                                            <i class="fas fa-key text-gray-400 text-sm"></i>
-                                        </div>
-                                        <input 
-                                            type="password" 
-                                            id="pin" 
-                                            name="pin" 
-                                            class="w-full pl-10 pr-12 py-3 border border-gray-300/50 dark:border-gray-600/50 rounded-xl bg-gray-50/50 dark:bg-gray-700/50 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500 backdrop-blur-sm transition-all duration-300 text-sm" 
-                                            placeholder="4-digit PIN" 
-                                            maxlength="4" 
-                                            required>
-                                        <button 
-                                            type="button" 
-                                            onclick="togglePassword('pin')"
-                                            class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-primary-500 transition-colors">
-                                            <i class="fas fa-eye text-sm" id="pin-eye"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Step 4: Security -->
-                        <div id="step-4" class="step-content" style="display: none;">
-                            <div class="text-center mb-4">
-                                <div class="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-primary-100/50 dark:bg-primary-800/50 backdrop-blur-sm mb-3">
-                                    <i class="fas fa-lock text-lg text-primary-600 dark:text-primary-300"></i>
-                                </div>
-                                <h3 class="text-sm font-bold text-gray-900 dark:text-white mb-1">Security Setup</h3>
-                                <p class="text-xs text-gray-600 dark:text-gray-400">Secure your account</p>
-                            </div>
-                            
-                            <div class="space-y-3">
-                                <!-- Password -->
-                                <div class="space-y-1">
-                                    <label for="password" class="block text-xs font-semibold text-gray-700 dark:text-gray-300">Password *</label>
-                                    <div class="relative">
-                                        <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none z-10">
-                                            <i class="fas fa-lock text-gray-400 text-sm"></i>
-                                        </div>
-                                        <input 
-                                            type="password" 
-                                            id="password" 
-                                            name="password" 
-                                            class="w-full pl-10 pr-12 py-3 border border-gray-300/50 dark:border-gray-600/50 rounded-xl bg-gray-50/50 dark:bg-gray-700/50 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500 backdrop-blur-sm transition-all duration-300 text-sm" 
-                                            placeholder="Create strong password" 
-                                            required>
-                                        <button 
-                                            type="button" 
-                                            onclick="togglePassword('password')"
-                                            class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-primary-500 transition-colors">
-                                            <i class="fas fa-eye text-sm" id="password-eye"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                                
-                                <!-- Confirm Password -->
-                                <div class="space-y-1">
-                                    <label for="password_confirmation" class="block text-xs font-semibold text-gray-700 dark:text-gray-300">Confirm Password *</label>
-                                    <div class="relative">
-                                        <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none z-10">
-                                            <i class="fas fa-lock text-gray-400 text-sm"></i>
-                                        </div>
-                                        <input 
-                                            type="password" 
-                                            id="password_confirmation" 
-                                            name="password_confirmation" 
-                                            class="w-full pl-10 pr-12 py-3 border border-gray-300/50 dark:border-gray-600/50 rounded-xl bg-gray-50/50 dark:bg-gray-700/50 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500 backdrop-blur-sm transition-all duration-300 text-sm" 
-                                            placeholder="Confirm your password" 
-                                            required>
-                                        <button 
-                                            type="button" 
-                                            onclick="togglePassword('password_confirmation')"
-                                            class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-primary-500 transition-colors">
-                                            <i class="fas fa-eye text-sm" id="password_confirmation-eye"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                                
-                                <!-- Terms and Conditions -->
-                                <div class="flex items-start space-x-2 pt-1">
-                                    <input 
-                                        type="checkbox" 
-                                        id="terms" 
-                                        name="terms" 
-                                        class="mt-1 w-4 h-4 text-primary-600 bg-gray-100 border-gray-300 rounded focus:ring-primary-500 focus:ring-2" 
-                                        required>
-                                    <label for="terms" class="text-xs text-gray-600 dark:text-gray-400 leading-relaxed">
-                                        I agree to the <a href="#" class="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium">Terms of Service</a> and <a href="#" class="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium">Privacy Policy</a>
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Hidden Currency Symbol Field -->
-                        <input type="hidden" name="s_curr" id="s_curr">
-                        
-                        <!-- Navigation Buttons -->
-                        <div class="flex justify-between pt-4">
-                            <button 
-                                type="button" 
-                                id="prev-btn" 
-                                class="px-4 py-3 bg-gray-100/90 dark:bg-gray-700/90 hover:bg-gray-200/90 dark:hover:bg-gray-600/90 text-gray-800 dark:text-gray-200 font-medium rounded-xl transition-all duration-300 flex items-center group text-sm backdrop-blur-sm border border-gray-200/50 dark:border-gray-600/50" 
-                                style="display: none;">
-                                <i class="fas fa-chevron-left mr-2 group-hover:-translate-x-1 transition-transform text-sm"></i>
-                                Previous
-                            </button>
-                            
-                            <button 
-                                type="button" 
-                                id="next-btn" 
-                                class="ml-auto px-4 py-3 bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 dark:from-primary-700 dark:to-primary-800 dark:hover:from-primary-600 dark:hover:to-primary-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:scale-[1.02] transition-all duration-300 flex items-center group text-sm">
-                                Next
-                                <i class="fas fa-chevron-right ml-2 group-hover:translate-x-1 transition-transform text-sm"></i>
-                            </button>
-                            
-                            <button 
-                                type="submit" 
-                                id="submit-btn" 
-                                class="ml-auto px-4 py-3 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:scale-[1.02] transition-all duration-300 flex items-center group text-sm" 
-                                style="display: none;">
-                                <i class="fas fa-user-plus mr-2 group-hover:translate-x-1 transition-transform text-sm"></i>
-                                Create Account
-                            </button>
-                        </div>
-                    </form>
+                    </div>
                     
-                    <!-- Login Link -->
-                    <div class="mt-6 text-center">
-                        <p class="text-sm text-gray-600 dark:text-gray-400">
-                            Already have an account? 
-                            <a href="{{ route('login') }}" class="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-semibold transition-colors">
-                                Sign In
-                            </a>
-                        </p>
+                    <div class="form-field">
+                        <label for="lastname">Last Name <span class="required">*</span></label>
+                        <div class="field-wrapper">
+                            <i class="fas fa-user field-icon"></i>
+                            <input 
+                                type="text" 
+                                id="lastname" 
+                                name="lastname" 
+                                value="{{ old('lastname') }}"
+                                data-required="true"
+                                placeholder="Smith"
+                            >
+                        </div>
+                    </div>
+                    
+                    <div class="form-field full-width">
+                        <label for="middlename">Middle Name</label>
+                        <div class="field-wrapper">
+                            <i class="fas fa-user field-icon"></i>
+                            <input 
+                                type="text" 
+                                id="middlename" 
+                                name="middlename" 
+                                value="{{ old('middlename') }}"
+                                placeholder="David"
+                            >
+                        </div>
+                    </div>
+                    
+                    <div class="form-field full-width">
+                        <label for="username">Username <span class="required">*</span></label>
+                        <div class="field-wrapper">
+                            <i class="fas fa-at field-icon"></i>
+                            <input 
+                                type="text" 
+                                id="username" 
+                                name="username" 
+                                value="{{ old('username') }}"
+                                data-required="true"
+                                placeholder="johnsmith123"
+                            >
+                        </div>
                     </div>
                 </div>
+            </div>
+
+            <!-- Step 2: Contact Information -->
+            <div class="register-step" id="step-2" style="display: none;">
+                <div class="step-header">
+                    <div class="step-icon">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <h3 class="step-title">Contact Information</h3>
+                    <p class="step-desc">How can we reach you?</p>
+                </div>
                 
-                <!-- Footer -->
-                <div class="mt-6 text-center">
-                    <p class="text-xs text-gray-500 dark:text-gray-500 max-w-xs mx-auto leading-relaxed">
-                        &copy; {{ date('Y') }} {{ $settings->site_name }}. All Rights Reserved.
-                    </p>
+                <div class="form-grid">
+                    <div class="form-field full-width">
+                        <label for="email">Email Address <span class="required">*</span></label>
+                        <div class="field-wrapper">
+                            <i class="fas fa-envelope field-icon"></i>
+                            <input 
+                                type="email" 
+                                id="email" 
+                                name="email" 
+                                value="{{ old('email') }}"
+                                data-required="true"
+                                placeholder="john@example.com"
+                            >
+                        </div>
+                    </div>
+                    
+                    <div class="form-field full-width">
+                        <label for="phone">Phone Number <span class="required">*</span></label>
+                        <div class="field-wrapper">
+                            <i class="fas fa-phone field-icon"></i>
+                            <input 
+                                type="tel" 
+                                id="phone" 
+                                name="phone" 
+                                value="{{ old('phone') }}"
+                                data-required="true"
+                                placeholder="+1 (234) 567-8901"
+                            >
+                        </div>
+                    </div>
+                    
+                    <div class="form-field full-width">
+                        <label for="country">Country <span class="required">*</span></label>
+                        <div class="field-wrapper">
+                            <i class="fas fa-globe field-icon"></i>
+                            <select 
+                                id="country" 
+                                name="country" 
+                                data-required="true"
+                            >
+                                <option value="" disabled selected>Select Country</option>
+                                @include('auth.countries')
+                            </select>
+                            <i class="fas fa-chevron-down select-arrow"></i>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
+
+            <!-- Step 3: Account Setup -->
+            <div class="register-step" id="step-3" style="display: none;">
+                <div class="step-header">
+                    <div class="step-icon">
+                        <i class="fas fa-university"></i>
+                    </div>
+                    <h3 class="step-title">Account Setup</h3>
+                    <p class="step-desc">Choose your account preferences</p>
+                </div>
+                
+                <div class="form-grid">
+                    <div class="form-field full-width">
+                        <label for="curr">Currency <span class="required">*</span></label>
+                        <div class="field-wrapper">
+                            <i class="fas fa-dollar-sign field-icon"></i>
+                            <select 
+                                id="curr" 
+                                name="curr" 
+                                data-required="true"
+                            >
+                                <option value="" disabled selected>Select Currency</option>
+                                @include('partials.currencies')
+                            </select>
+                            <i class="fas fa-chevron-down select-arrow"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="form-field full-width">
+                        <label for="accounttype">Account Type <span class="required">*</span></label>
+                        <div class="field-wrapper">
+                            <i class="fas fa-university field-icon"></i>
+                            <select 
+                                id="accounttype" 
+                                name="accounttype" 
+                                data-required="true"
+                            >
+                                <option value="" disabled selected>Select Account Type</option>
+                                <option value="Checking Account">Checking Account</option>
+                                <option value="Savings Account">Savings Account</option>
+                                <option value="Fixed Deposit Account">Fixed Deposit Account</option>
+                                <option value="Current Account">Current Account</option>
+                                <option value="Business Account">Business Account</option>
+                                <option value="Investment Account">Investment Account</option>
+                            </select>
+                            <i class="fas fa-chevron-down select-arrow"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="form-field full-width">
+                        <label for="pin">Transaction PIN <span class="required">*</span></label>
+                        <div class="field-wrapper">
+                            <i class="fas fa-key field-icon"></i>
+                            <input 
+                                type="password" 
+                                id="pin" 
+                                name="pin" 
+                                data-required="true"
+                                placeholder="4-digit PIN" 
+                                maxlength="4"
+                            >
+                            <button 
+                                type="button" 
+                                class="toggle-field"
+                                onclick="toggleFieldVisibility(this)"
+                            >
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 4: Security -->
+            <div class="register-step" id="step-4" style="display: none;">
+                <div class="step-header">
+                    <div class="step-icon">
+                        <i class="fas fa-lock"></i>
+                    </div>
+                    <h3 class="step-title">Security Setup</h3>
+                    <p class="step-desc">Secure your account</p>
+                </div>
+                
+                <div class="form-grid">
+                    <div class="form-field full-width">
+                        <label for="password">Password <span class="required">*</span></label>
+                        <div class="field-wrapper">
+                            <i class="fas fa-lock field-icon"></i>
+                            <input 
+                                type="password" 
+                                id="password" 
+                                name="password" 
+                                data-required="true"
+                                placeholder="Create strong password"
+                            >
+                            <button 
+                                type="button" 
+                                class="toggle-field"
+                                onclick="toggleFieldVisibility(this)"
+                            >
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                        <div class="password-strength" id="passwordStrength">
+                            <span class="strength-bar"></span>
+                            <span class="strength-bar"></span>
+                            <span class="strength-bar"></span>
+                            <span class="strength-bar"></span>
+                            <span class="strength-text">Enter a password</span>
+                        </div>
+                    </div>
+                    
+                    <div class="form-field full-width">
+                        <label for="password_confirmation">Confirm Password <span class="required">*</span></label>
+                        <div class="field-wrapper">
+                            <i class="fas fa-check-circle field-icon"></i>
+                            <input 
+                                type="password" 
+                                id="password_confirmation" 
+                                name="password_confirmation" 
+                                data-required="true"
+                                placeholder="Confirm your password"
+                            >
+                            <button 
+                                type="button" 
+                                class="toggle-field"
+                                onclick="toggleFieldVisibility(this)"
+                            >
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="form-field full-width terms-field">
+                        <label class="checkbox-label">
+                            <input 
+                                type="checkbox" 
+                                id="terms" 
+                                name="terms" 
+                                data-required="true"
+                            >
+                            <span class="checkmark"></span>
+                            <span class="terms-text">
+                                I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>
+                            </span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hidden Currency Symbol -->
+            <input type="hidden" name="s_curr" id="s_curr">
+
+            <!-- Navigation -->
+            <div class="register-nav">
+                <button type="button" id="prevBtn" class="nav-btn prev-btn">
+                    <i class="fas fa-arrow-left"></i>
+                    <span>Back</span>
+                </button>
+                
+                <button type="button" id="nextBtn" class="nav-btn next-btn">
+                    <span>Continue</span>
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+                
+                <button type="submit" id="submitBtn" class="nav-btn submit-btn">
+                    <i class="fas fa-user-plus"></i>
+                    <span>Create Account</span>
+                </button>
+            </div>
+
+            <!-- Login Link -->
+            <div class="register-footer">
+                <p>Already have an account? <a href="{{ route('login') }}">Sign In</a></p>
+            </div>
+        </form>
+
+        <!-- Hidden CSRF for fallback -->
+        <meta name="csrf-token" content="{{ csrf_token() }}">
     </div>
-</div>
 
-@endsection
+    <style>
+        /* ============================================================
+                   REGISTER APP - Pure CSS
+                   ============================================================ */
 
-@section('scripts')
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-    let currentStep = 1;
-    const totalSteps = 4;
-
-    function togglePassword(fieldId) {
-        const field = document.getElementById(fieldId);
-        const eye = document.getElementById(fieldId + '-eye');
-        
-        if (field.type === 'password') {
-            field.type = 'text';
-            eye.classList.remove('fa-eye');
-            eye.classList.add('fa-eye-slash');
-        } else {
-            field.type = 'password';
-            eye.classList.remove('fa-eye-slash');
-            eye.classList.add('fa-eye');
+        #register-app {
+            width: 100%;
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 4px 0;
         }
-    }
 
-    function updateProgress() {
-        const progressPercentage = (currentStep / totalSteps) * 100;
-        $('#progress-bar').css('width', progressPercentage + '%');
-        $('#current-step').text(currentStep);
-        
-        // Update step indicators
-        for (let i = 1; i <= totalSteps; i++) {
-            const indicator = $(`#step-${i}-indicator`);
-            const label = indicator.next('span');
-            
-            if (i <= currentStep) {
-                indicator.removeClass('bg-gray-300 dark:bg-gray-600 text-gray-500')
-                        .addClass('bg-primary-600 text-white');
-                label.removeClass('text-gray-500 dark:text-gray-400')
-                     .addClass('text-primary-600 dark:text-primary-400 font-medium');
-            } else {
-                indicator.removeClass('bg-primary-600 text-white')
-                        .addClass('bg-gray-300 dark:bg-gray-600 text-gray-500');
-                label.removeClass('text-primary-600 dark:text-primary-400 font-medium')
-                     .addClass('text-gray-500 dark:text-gray-400');
+        /* ============================================================
+                   PROGRESS STEPS
+                   ============================================================ */
+        .register-progress {
+            margin-bottom: 28px;
+        }
+
+        .progress-steps {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+            padding: 0 4px;
+            margin-bottom: 6px;
+        }
+
+        .progress-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            flex: 1;
+            cursor: default;
+            position: relative;
+        }
+
+        .step-circle {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #E5E7EB;
+            color: #9CA3AF;
+            font-size: 12px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            border: 2px solid transparent;
+        }
+
+        .progress-step.active .step-circle {
+            background: #10B981;
+            color: #FFFFFF;
+            border-color: #10B981;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+            transform: scale(1.05);
+        }
+
+        .progress-step.completed .step-circle {
+            background: #10B981;
+            color: #FFFFFF;
+            border-color: #10B981;
+            box-shadow: 0 2px 8px rgba(16, 185, 129, 0.2);
+        }
+
+        .step-label {
+            font-size: 10px;
+            font-weight: 500;
+            color: #9CA3AF;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: color 0.3s ease;
+        }
+
+        .progress-step.active .step-label {
+            color: #10B981;
+            font-weight: 600;
+        }
+
+        .progress-step.completed .step-label {
+            color: #10B981;
+        }
+
+        .progress-bar-track {
+            width: 100%;
+            height: 4px;
+            background: #E5E7EB;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 4px;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #10B981, #059669);
+            border-radius: 4px;
+            transition: width 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            width: 25%;
+        }
+
+        /* ============================================================
+                   STEP CONTENT
+                   ============================================================ */
+        .register-step {
+            animation: fadeSlide 0.4s ease;
+        }
+
+        @keyframes fadeSlide {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
             }
         }
-    }
 
-    function showStep(step) {
-        $('.step-content').hide();
-        $(`#step-${step}`).fadeIn(300);
-        
-        // Update navigation buttons
-        if (step === 1) {
-            $('#prev-btn').hide();
-        } else {
-            $('#prev-btn').show();
+        .step-header {
+            text-align: center;
+            margin-bottom: 24px;
         }
-        
-        if (step === totalSteps) {
-            $('#next-btn').hide();
-            $('#submit-btn').show();
-        } else {
-            $('#next-btn').show();
-            $('#submit-btn').hide();
+
+        .step-icon {
+            width: 52px;
+            height: 52px;
+            margin: 0 auto 12px;
+            background: linear-gradient(135deg, #ECFDF5, #D1FAE5);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            color: #10B981;
         }
-        
-        updateProgress();
-    }
 
-    function validateStep(step) {
-        let isValid = true;
-        const requiredFields = $(`#step-${step} input[required], #step-${step} select[required]`);
-        
-        requiredFields.each(function() {
-            const field = $(this);
-            const value = field.val().trim();
-            
-            if (!value) {
-                field.addClass('border-red-500 focus:border-red-500 focus:ring-red-500');
-                isValid = false;
-            } else {
-                field.removeClass('border-red-500 focus:border-red-500 focus:ring-red-500');
-            }
-        });
-        
-        // Additional validation for step 4 (passwords)
-        if (step === 4) {
-            const password = $('#password').val();
-            const confirmPassword = $('#password_confirmation').val();
-            const terms = $('#terms').is(':checked');
-            
-            if (password !== confirmPassword) {
-                $('#password_confirmation').addClass('border-red-500 focus:border-red-500 focus:ring-red-500');
-                isValid = false;
-            }
-            
-            if (!terms) {
-                isValid = false;
-            }
+        .step-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--gray-800);
+            margin: 0 0 4px 0;
         }
-        
-        return isValid;
-    }
 
-    $(document).ready(function() {
-        // Initialize first step
-        showStep(1);
-        
-        // Next button click
-        $('#next-btn').click(function() {
-            if (validateStep(currentStep)) {
-                if (currentStep < totalSteps) {
-                    currentStep++;
-                    showStep(currentStep);
-                }
-            }
-        });
-        
-        // Previous button click
-        $('#prev-btn').click(function() {
-            if (currentStep > 1) {
-                currentStep--;
-                showStep(currentStep);
-            }
-        });
-        
-        // PIN input validation (numbers only, max 4 digits)
-        $('#pin').on('input', function() {
-            this.value = this.value.replace(/[^0-9]/g, '').slice(0, 4);
-        });
-        
-        // Currency symbol handling
-        $('#curr').change(function() {
-            const selectedOption = $(this).find('option:selected');
-            const symbol = selectedOption.data('symbol');
-            if (symbol) {
-                $('#s_curr').val(symbol);
-            }
-        });
-        
-        // Real-time validation feedback
-        $('input[required], select[required]').on('blur', function() {
-            const field = $(this);
-            const value = field.val().trim();
-            
-            if (!value) {
-                field.addClass('border-red-500 focus:border-red-500 focus:ring-red-500');
-            } else {
-                field.removeClass('border-red-500 focus:border-red-500 focus:ring-red-500');
-            }
-        });
-        
-        // Password confirmation validation
-        $('#password_confirmation').on('input', function() {
-            const password = $('#password').val();
-            const confirmPassword = $(this).val();
-            
-            if (password !== confirmPassword) {
-                $(this).addClass('border-red-500 focus:border-red-500 focus:ring-red-500');
-            } else {
-                $(this).removeClass('border-red-500 focus:border-red-500 focus:ring-red-500');
-            }
-        });
-        
-        // Add ripple effect to buttons
-        $('button, a').on('click', function(e) {
-            const button = $(this);
-            const ripple = $('<span class="ripple"></span>');
-            const rect = this.getBoundingClientRect();
-            const size = Math.max(rect.width, rect.height);
-            const x = e.clientX - rect.left - size / 2;
-            const y = e.clientY - rect.top - size / 2;
-            
-            ripple.css({
-                width: size + 'px',
-                height: size + 'px',
-                left: x + 'px',
-                top: y + 'px'
-            });
-            
-            button.append(ripple);
-            
-            setTimeout(() => {
-                ripple.remove();
-            }, 600);
-        });
-    });
-</script>
+        .step-desc {
+            font-size: 13px;
+            color: var(--gray-500);
+            margin: 0;
+        }
 
-<style>
-    .ripple {
-        position: absolute;
-        border-radius: 50%;
-        background: rgba(255, 255, 255, 0.3);
-        transform: scale(0);
-        animation: ripple-animation 0.6s linear;
-        pointer-events: none;
-    }
-    
-    @keyframes ripple-animation {
-        to {
-            transform: scale(4);
+        /* ============================================================
+                   FORM FIELDS
+                   ============================================================ */
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        .form-field {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .form-field.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-field label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--gray-700);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .form-field label .required {
+            color: #EF4444;
+            font-weight: 700;
+        }
+
+        .field-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .field-wrapper .field-icon {
+            position: absolute;
+            left: 12px;
+            color: #9CA3AF;
+            font-size: 13px;
+            transition: color 0.3s ease;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .field-wrapper input,
+        .field-wrapper select {
+            width: 100%;
+            padding: 11px 12px 11px 38px;
+            font-size: 14px;
+            font-family: 'Inter', sans-serif;
+            font-weight: 400;
+            color: var(--gray-800);
+            background: var(--gray-50);
+            border: 2px solid #E5E7EB;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            outline: none;
+            appearance: none;
+        }
+
+        .field-wrapper select {
+            padding-right: 36px;
+            cursor: pointer;
+            background-image: none;
+        }
+
+        .field-wrapper select option {
+            color: var(--gray-800);
+            background: var(--white);
+        }
+
+        .field-wrapper .select-arrow {
+            position: absolute;
+            right: 12px;
+            color: #9CA3AF;
+            font-size: 11px;
+            pointer-events: none;
+            transition: transform 0.3s ease;
+        }
+
+        .field-wrapper select:focus ~ .select-arrow {
+            transform: rotate(180deg);
+        }
+
+        .field-wrapper input:focus,
+        .field-wrapper select:focus {
+            border-color: #10B981;
+            background: var(--white);
+            box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.08);
+        }
+
+        .field-wrapper input:focus ~ .field-icon,
+        .field-wrapper select:focus ~ .field-icon {
+            color: #10B981;
+        }
+
+        .field-wrapper input.error,
+        .field-wrapper select.error {
+            border-color: #EF4444;
+            box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.08);
+        }
+
+        .field-wrapper input::placeholder {
+            color: #9CA3AF;
+            font-size: 13px;
+        }
+
+        .field-wrapper .toggle-field {
+            position: absolute;
+            right: 10px;
+            background: none;
+            border: none;
+            color: #9CA3AF;
+            cursor: pointer;
+            padding: 4px;
+            transition: color 0.3s ease;
+            font-size: 14px;
+        }
+
+        .field-wrapper .toggle-field:hover {
+            color: var(--gray-600);
+        }
+
+        /* ============================================================
+                   PASSWORD STRENGTH
+                   ============================================================ */
+        .password-strength {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 6px;
+            padding: 0 2px;
+        }
+
+        .strength-bar {
+            flex: 1;
+            height: 3px;
+            background: #E5E7EB;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .strength-bar.weak {
+            background: #EF4444;
+        }
+        .strength-bar.medium {
+            background: #F59E0B;
+        }
+        .strength-bar.strong {
+            background: #10B981;
+        }
+        .strength-bar.very-strong {
+            background: #059669;
+        }
+
+        .strength-text {
+            font-size: 10px;
+            color: #9CA3AF;
+            font-weight: 500;
+            min-width: 80px;
+            text-align: right;
+        }
+
+        .strength-text.weak { color: #EF4444; }
+        .strength-text.medium { color: #F59E0B; }
+        .strength-text.strong { color: #10B981; }
+        .strength-text.very-strong { color: #059669; }
+
+        /* ============================================================
+                   TERMS CHECKBOX
+                   ============================================================ */
+        .terms-field {
+            margin-top: 4px;
+        }
+
+        .checkbox-label {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            cursor: pointer;
+            position: relative;
+            padding-left: 0;
+        }
+
+        .checkbox-label input[type="checkbox"] {
+            position: absolute;
             opacity: 0;
+            width: 0;
+            height: 0;
         }
-    }
-    
-    .floating-slow {
-        animation: float 8s ease-in-out infinite;
-    }
-    
-    .floating {
-        animation: float 6s ease-in-out infinite;
-    }
-    
-    .floating-slower {
-        animation: float 10s ease-in-out infinite;
-    }
-    
-    @keyframes float {
-        0%, 100% { transform: translateY(0px) rotate(0deg); }
-        50% { transform: translateY(-20px) rotate(180deg); }
-    }
-    
-    .step-content {
-        min-height: 320px;
-    }
-    
-    /* Custom focus styles */
-    input:focus, select:focus {
-        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-    }
-    
-    /* Smooth transitions for form elements */
-    input, select, button {
-        transition: all 0.3s ease;
-    }
-    
-    /* Enhanced button hover effects */
-    button:hover {
-        transform: translateY(-1px);
-    }
-    
-    button:active {
-        transform: translateY(0);
-    }
-    
-    /* Better mobile responsiveness */
-    @media (max-width: 768px) {
-        .step-content {
-            min-height: 280px;
+
+        .checkbox-label .checkmark {
+            width: 18px;
+            height: 18px;
+            min-width: 18px;
+            border: 2px solid #D1D5DB;
+            border-radius: 5px;
+            background: var(--white);
+            transition: all 0.3s ease;
+            position: relative;
+            margin-top: 1px;
         }
-    }
-    
-    /* Enhanced form field styling */
-    input[type="text"], input[type="email"], input[type="tel"], input[type="password"], select {
-        font-size: 16px; /* Prevents zoom on iOS */
-    }
-    
-    /* Better checkbox styling */
-    input[type="checkbox"] {
-        accent-color: rgb(59 130 246);
-    }
-    
-    /* Ensure icons are properly positioned */
-    .relative .absolute {
-        z-index: 10;
-    }
-</style>
-@endsection 
+
+        .checkbox-label input[type="checkbox"]:checked + .checkmark {
+            background: #10B981;
+            border-color: #10B981;
+        }
+
+        .checkbox-label input[type="checkbox"]:checked + .checkmark::after {
+            content: '\f00c';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #FFFFFF;
+            font-size: 10px;
+        }
+
+        .checkbox-label .terms-text {
+            font-size: 12px;
+            color: var(--gray-600);
+            line-height: 1.5;
+        }
+
+        .checkbox-label .terms-text a {
+            color: #10B981;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .checkbox-label .terms-text a:hover {
+            color: #059669;
+            text-decoration: underline;
+        }
+
+        /* ============================================================
+                   NAVIGATION BUTTONS
+                   ============================================================ */
+        .register-nav {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+            padding-top: 20px;
+            border-top: 1px solid #E5E7EB;
+        }
+
+        .nav-btn {
+            padding: 12px 20px;
+            font-size: 14px;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            flex: 1;
+        }
+
+        .nav-btn:active {
+            transform: scale(0.96);
+        }
+
+        .prev-btn {
+            background: #F3F4F6;
+            color: var(--gray-700);
+            flex: 0.5;
+        }
+
+        .prev-btn:hover {
+            background: #E5E7EB;
+            transform: translateX(-2px);
+        }
+
+        .next-btn {
+            background: linear-gradient(135deg, #10B981, #059669);
+            color: #FFFFFF;
+            flex: 1;
+            box-shadow: 0 4px 16px rgba(16, 185, 129, 0.2);
+        }
+
+        .next-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(16, 185, 129, 0.3);
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #10B981, #059669);
+            color: #FFFFFF;
+            flex: 1;
+            box-shadow: 0 4px 16px rgba(16, 185, 129, 0.2);
+            display: none;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(16, 185, 129, 0.3);
+        }
+
+        .nav-btn.hidden {
+            display: none;
+        }
+
+        /* ============================================================
+                   FOOTER
+                   ============================================================ */
+        .register-footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 13px;
+            color: var(--gray-600);
+        }
+
+        .register-footer a {
+            color: #10B981;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .register-footer a:hover {
+            color: #059669;
+            text-decoration: underline;
+        }
+
+        /* ============================================================
+                   RESPONSIVE
+                   ============================================================ */
+        @media (max-width: 480px) {
+            .register-progress {
+                margin-bottom: 20px;
+            }
+
+            .step-circle {
+                width: 28px;
+                height: 28px;
+                font-size: 11px;
+            }
+
+            .step-label {
+                font-size: 9px;
+            }
+
+            .form-grid {
+                gap: 12px;
+            }
+
+            .field-wrapper input,
+            .field-wrapper select {
+                padding: 10px 12px 10px 36px;
+                font-size: 13px;
+                border-radius: 10px;
+            }
+
+            .field-wrapper .field-icon {
+                font-size: 12px;
+                left: 10px;
+            }
+
+            .step-icon {
+                width: 44px;
+                height: 44px;
+                font-size: 18px;
+            }
+
+            .step-title {
+                font-size: 16px;
+            }
+
+            .nav-btn {
+                padding: 10px 16px;
+                font-size: 13px;
+                border-radius: 10px;
+            }
+
+            .register-nav {
+                gap: 8px;
+                padding-top: 16px;
+            }
+
+            .checkbox-label .terms-text {
+                font-size: 11px;
+            }
+
+            .password-strength {
+                gap: 4px;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .progress-steps {
+                gap: 4px;
+            }
+
+            .step-label {
+                font-size: 8px;
+            }
+        }
+
+        /* ============================================================
+                   DARK MODE
+                   ============================================================ */
+        @media (prefers-color-scheme: dark) {
+            .step-circle {
+                background: #374151;
+                color: #6B7280;
+            }
+
+            .progress-step.active .step-circle {
+                background: #10B981;
+                color: #FFFFFF;
+            }
+
+            .progress-step.completed .step-circle {
+                background: #10B981;
+                color: #FFFFFF;
+            }
+
+            .progress-bar-track {
+                background: #374151;
+            }
+
+            .step-icon {
+                background: rgba(16, 185, 129, 0.15);
+            }
+
+            .step-title {
+                color: #F9FAFB;
+            }
+
+            .step-desc {
+                color: #9CA3AF;
+            }
+
+            .form-field label {
+                color: #D1D5DB;
+            }
+
+            .field-wrapper input,
+            .field-wrapper select {
+                background: #1F2937;
+                border-color: #374151;
+                color: #F9FAFB;
+            }
+
+            .field-wrapper input:focus,
+            .field-wrapper select:focus {
+                background: #1F2937;
+                border-color: #10B981;
+            }
+
+            .field-wrapper input::placeholder {
+                color: #6B7280;
+            }
+
+            .field-wrapper .field-icon {
+                color: #6B7280;
+            }
+
+            .field-wrapper .toggle-field {
+                color: #6B7280;
+            }
+
+            .checkbox-label .checkmark {
+                background: #1F2937;
+                border-color: #4B5563;
+            }
+
+            .checkbox-label input[type="checkbox"]:checked + .checkmark {
+                background: #10B981;
+                border-color: #10B981;
+            }
+
+            .checkbox-label .terms-text {
+                color: #9CA3AF;
+            }
+
+            .prev-btn {
+                background: #374151;
+                color: #D1D5DB;
+            }
+
+            .prev-btn:hover {
+                background: #4B5563;
+            }
+
+            .register-nav {
+                border-top-color: #374151;
+            }
+
+            .register-footer {
+                color: #9CA3AF;
+            }
+
+            .strength-bar {
+                background: #374151;
+            }
+        }
+    </style>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // ============================================================
+            // REGISTER APP - Pure JavaScript
+            // ============================================================
+            
+            const App = {
+                currentStep: 1,
+                totalSteps: 4,
+                form: document.getElementById('registration-form'),
+                nextBtn: document.getElementById('nextBtn'),
+                prevBtn: document.getElementById('prevBtn'),
+                submitBtn: document.getElementById('submitBtn'),
+                progressFill: document.getElementById('progressFill'),
+                steps: [],
+                fields: {},
+
+                init() {
+                    this.steps = [
+                        document.getElementById('step-1'),
+                        document.getElementById('step-2'),
+                        document.getElementById('step-3'),
+                        document.getElementById('step-4')
+                    ];
+
+                    this.collectFields();
+                    this.bindEvents();
+                    this.updateUI();
+                    this.initPasswordStrength();
+                },
+
+                collectFields() {
+                    this.fields = {};
+                    this.steps.forEach((step, index) => {
+                        const inputs = step.querySelectorAll('[data-required="true"]');
+                        this.fields[index + 1] = inputs;
+                    });
+                },
+
+                bindEvents() {
+                    // Next button
+                    this.nextBtn.addEventListener('click', () => {
+                        if (this.validateStep(this.currentStep)) {
+                            if (this.currentStep < this.totalSteps) {
+                                this.currentStep++;
+                                this.updateUI();
+                            }
+                        }
+                    });
+
+                    // Previous button
+                    this.prevBtn.addEventListener('click', () => {
+                        if (this.currentStep > 1) {
+                            this.currentStep--;
+                            this.updateUI();
+                        }
+                    });
+
+                    // Form submit
+                    this.form.addEventListener('submit', (e) => {
+                        if (!this.validateStep(4)) {
+                            e.preventDefault();
+                        }
+                    });
+
+                    // Real-time validation on input
+                    document.querySelectorAll('input, select').forEach(el => {
+                        el.addEventListener('input', () => this.clearFieldError(el));
+                        el.addEventListener('change', () => this.clearFieldError(el));
+                    });
+
+                    // PIN input restriction
+                    const pinInput = document.getElementById('pin');
+                    if (pinInput) {
+                        pinInput.addEventListener('input', function() {
+                            this.value = this.value.replace(/[^0-9]/g, '').slice(0, 4);
+                        });
+                    }
+
+                    // Currency symbol sync
+                    const currSelect = document.getElementById('curr');
+                    if (currSelect) {
+                        currSelect.addEventListener('change', function() {
+                            const selected = this.options[this.selectedIndex];
+                            const symbol = selected.getAttribute('data-symbol');
+                            if (symbol) {
+                                document.getElementById('s_curr').value = symbol;
+                            }
+                        });
+                    }
+                },
+
+                validateStep(step) {
+                    let isValid = true;
+                    const fields = this.fields[step] || [];
+
+                    fields.forEach(field => {
+                        if (field.type === 'checkbox') {
+                            if (!field.checked) {
+                                this.markFieldError(field);
+                                isValid = false;
+                            } else {
+                                this.clearFieldError(field);
+                            }
+                        } else {
+                            if (!field.value || field.value.trim() === '') {
+                                this.markFieldError(field);
+                                isValid = false;
+                            } else {
+                                this.clearFieldError(field);
+                            }
+                        }
+                    });
+
+                    // Password confirmation check
+                    if (step === 4) {
+                        const pass = document.getElementById('password');
+                        const confirmPass = document.getElementById('password_confirmation');
+                        if (pass && confirmPass && pass.value !== confirmPass.value) {
+                            this.markFieldError(confirmPass);
+                            isValid = false;
+                        }
+                    }
+
+                    return isValid;
+                },
+
+                markFieldError(field) {
+                    const wrapper = field.closest('.field-wrapper');
+                    if (wrapper) {
+                        wrapper.querySelector('input, select')?.classList.add('error');
+                    }
+                },
+
+                clearFieldError(field) {
+                    const wrapper = field.closest('.field-wrapper');
+                    if (wrapper) {
+                        wrapper.querySelector('input, select')?.classList.remove('error');
+                    }
+                },
+
+                updateUI() {
+                    // Show/hide steps
+                    this.steps.forEach((step, index) => {
+                        const stepNum = index + 1;
+                        if (stepNum === this.currentStep) {
+                            step.style.display = 'block';
+                        } else {
+                            step.style.display = 'none';
+                        }
+                    });
+
+                    // Update progress
+                    const progress = (this.currentStep / this.totalSteps) * 100;
+                    this.progressFill.style.width = progress + '%';
+
+                    // Update step circles
+                    document.querySelectorAll('.progress-step').forEach(el => {
+                        const stepNum = parseInt(el.dataset.step);
+                        el.classList.remove('active', 'completed');
+                        if (stepNum === this.currentStep) {
+                            el.classList.add('active');
+                        } else if (stepNum < this.currentStep) {
+                            el.classList.add('completed');
+                        }
+                    });
+
+                    // Update navigation buttons
+                    if (this.currentStep === 1) {
+                        this.prevBtn.style.display = 'none';
+                    } else {
+                        this.prevBtn.style.display = 'flex';
+                    }
+
+                    if (this.currentStep === this.totalSteps) {
+                        this.nextBtn.style.display = 'none';
+                        this.submitBtn.style.display = 'flex';
+                    } else {
+                        this.nextBtn.style.display = 'flex';
+                        this.submitBtn.style.display = 'none';
+                    }
+                },
+
+                initPasswordStrength() {
+                    const passwordInput = document.getElementById('password');
+                    if (!passwordInput) return;
+
+                    const strengthBars = document.querySelectorAll('.strength-bar');
+                    const strengthText = document.querySelector('.strength-text');
+
+                    passwordInput.addEventListener('input', function() {
+                        const password = this.value;
+                        const strength = App.checkPasswordStrength(password);
+
+                        // Update bars
+                        strengthBars.forEach((bar, index) => {
+                            bar.className = 'strength-bar';
+                            if (index < strength.level) {
+                                bar.classList.add(strength.class);
+                            }
+                        });
+
+                        // Update text
+                        strengthText.textContent = strength.label;
+                        strengthText.className = 'strength-text ' + strength.class;
+                    });
+                },
+
+                checkPasswordStrength(password) {
+                    if (password.length === 0) {
+                        return { level: 0, class: '', label: 'Enter a password' };
+                    }
+
+                    let score = 0;
+                    if (password.length >= 8) score++;
+                    if (password.length >= 12) score++;
+                    if (/[a-z]/.test(password) && /[A-Z]/.test(password)) score++;
+                    if (/\d/.test(password)) score++;
+                    if (/[^a-zA-Z0-9]/.test(password)) score++;
+
+                    const levels = [
+                        { level: 1, class: 'weak', label: 'Weak' },
+                        { level: 2, class: 'weak', label: 'Weak' },
+                        { level: 3, class: 'medium', label: 'Medium' },
+                        { level: 4, class: 'strong', label: 'Strong' },
+                        { level: 5, class: 'very-strong', label: 'Very Strong' }
+                    ];
+
+                    const result = levels[Math.min(score, 4)] || levels[0];
+                    return {
+                        level: result.level,
+                        class: result.class,
+                        label: result.label
+                    };
+                }
+            };
+
+            // Initialize app
+            App.init();
+
+            // ============================================================
+            // TOGGLE PASSWORD VISIBILITY
+            // ============================================================
+            window.toggleFieldVisibility = function(button) {
+                const wrapper = button.closest('.field-wrapper');
+                const input = wrapper.querySelector('input');
+                const icon = button.querySelector('i');
+
+                if (input && icon) {
+                    if (input.type === 'password') {
+                        input.type = 'text';
+                        icon.classList.remove('fa-eye');
+                        icon.classList.add('fa-eye-slash');
+                    } else {
+                        input.type = 'password';
+                        icon.classList.remove('fa-eye-slash');
+                        icon.classList.add('fa-eye');
+                    }
+                }
+            };
+
+            // ============================================================
+            // RIPPLE EFFECT ON BUTTONS
+            // ============================================================
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    const ripple = document.createElement('span');
+                    const rect = this.getBoundingClientRect();
+                    const size = Math.max(rect.width, rect.height);
+                    const x = e.clientX - rect.left - size / 2;
+                    const y = e.clientY - rect.top - size / 2;
+
+                    ripple.style.cssText = `
+                        position: absolute;
+                        border-radius: 50%;
+                        background: rgba(255,255,255,0.2);
+                        width: ${size}px;
+                        height: ${size}px;
+                        left: ${x}px;
+                        top: ${y}px;
+                        pointer-events: none;
+                        transform: scale(0);
+                        animation: rippleEffect 0.6s linear forwards;
+                    `;
+
+                    this.style.position = 'relative';
+                    this.style.overflow = 'hidden';
+                    this.appendChild(ripple);
+
+                    setTimeout(() => ripple.remove(), 600);
+                });
+            });
+
+            // Inject ripple keyframes
+            if (!document.getElementById('rippleStyles')) {
+                const style = document.createElement('style');
+                style.id = 'rippleStyles';
+                style.textContent = `
+                    @keyframes rippleEffect {
+                        to {
+                            transform: scale(4);
+                            opacity: 0;
+                        }
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+        });
+    </script>
+
+    @stack('scripts')
+@endsection

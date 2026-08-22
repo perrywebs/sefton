@@ -1,630 +1,801 @@
 <!DOCTYPE html>
-<html lang="en" x-data="{ darkMode: localStorage.getItem('darkMode') === 'true' || false }" x-init="darkMode ? document.documentElement.classList.add('dark') : document.documentElement.classList.remove('dark')" :class="{ 'dark': darkMode }">
+<html lang="en">
 <head>
-    <title>{{ $settings->site_name }} - @yield('title')</title>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    <meta name="robots" content="index, follow">
-    <meta name="apple-mobile-web-app-title" content="{{$settings->site_name}}">
-    <meta name="application-name" content="{{$settings->site_name}}">
-    <meta name="description" content="Swift and Secure Money Transfer to any UK bank account will become a breeze with {{$settings->site_name}}.">
-    <link rel="shortcut icon" href="{{ asset('storage/app/public/' . $settings->favicon) }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>@yield('title', 'Authentication') - {{ $settings->site_name ?? 'App' }}</title>
     
-    <!-- Tailwind CSS with custom color variables -->
-    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,line-clamp"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        primary: { // Dynamic primary colors from appearance settings
-                            50: '{{ isset($appearanceSettings->primary_color_50) ? $appearanceSettings->primary_color_50 : "#f0f9ff" }}',
-                            100: '{{ isset($appearanceSettings->primary_color_100) ? $appearanceSettings->primary_color_100 : "#e0f2fe" }}',
-                            200: '{{ isset($appearanceSettings->primary_color_200) ? $appearanceSettings->primary_color_200 : "#bae6fd" }}',
-                            300: '{{ isset($appearanceSettings->primary_color_300) ? $appearanceSettings->primary_color_300 : "#7dd3fc" }}',
-                            400: '{{ isset($appearanceSettings->primary_color_400) ? $appearanceSettings->primary_color_400 : "#38bdf8" }}',
-                            DEFAULT: '{{ isset($appearanceSettings->primary_color) ? $appearanceSettings->primary_color : "#0ea5e9" }}',
-                            500: '{{ isset($appearanceSettings->primary_color) ? $appearanceSettings->primary_color : "#0ea5e9" }}',
-                            600: '{{ isset($appearanceSettings->primary_color_600) ? $appearanceSettings->primary_color_600 : "#0284c7" }}',
-                            700: '{{ isset($appearanceSettings->primary_color_700) ? $appearanceSettings->primary_color_700 : "#0369a1" }}',
-                            foreground: '{{ isset($appearanceSettings->primary_color_foreground) ? $appearanceSettings->primary_color_foreground : "#ffffff" }}',
-                        },
-                        secondary: { // Dynamic secondary colors from appearance settings
-                            50: '{{ isset($appearanceSettings->secondary_color_50) ? $appearanceSettings->secondary_color_50 : "#f8fafc" }}',
-                            100: '{{ isset($appearanceSettings->secondary_color_100) ? $appearanceSettings->secondary_color_100 : "#f1f5f9" }}',
-                            200: '{{ isset($appearanceSettings->secondary_color_200) ? $appearanceSettings->secondary_color_200 : "#e2e8f0" }}',
-                            300: '{{ isset($appearanceSettings->secondary_color_300) ? $appearanceSettings->secondary_color_300 : "#cbd5e1" }}',
-                            400: '{{ isset($appearanceSettings->secondary_color_400) ? $appearanceSettings->secondary_color_400 : "#94a3b8" }}',
-                            DEFAULT: '{{ isset($appearanceSettings->secondary_color) ? $appearanceSettings->secondary_color : "#64748b" }}',
-                            500: '{{ isset($appearanceSettings->secondary_color) ? $appearanceSettings->secondary_color : "#64748b" }}',
-                            600: '{{ isset($appearanceSettings->secondary_color_600) ? $appearanceSettings->secondary_color_600 : "#475569" }}',
-                            700: '{{ isset($appearanceSettings->secondary_color_700) ? $appearanceSettings->secondary_color_700 : "#334155" }}',
-                            foreground: '{{ isset($appearanceSettings->secondary_color_foreground) ? $appearanceSettings->secondary_color_foreground : "#0f172a" }}',
-                        },
-                        accent: { // Dynamic accent colors from appearance settings
-                            50: '{{ isset($appearanceSettings->accent_color_50) ? $appearanceSettings->accent_color_50 : "#fdf2f8" }}',
-                            100: '{{ isset($appearanceSettings->accent_color_100) ? $appearanceSettings->accent_color_100 : "#fce7f3" }}',
-                            200: '{{ isset($appearanceSettings->accent_color_200) ? $appearanceSettings->accent_color_200 : "#fbcfe8" }}',
-                            300: '{{ isset($appearanceSettings->accent_color_300) ? $appearanceSettings->accent_color_300 : "#f9a8d4" }}',
-                            400: '{{ isset($appearanceSettings->accent_color_400) ? $appearanceSettings->accent_color_400 : "#f472b6" }}',
-                            DEFAULT: '{{ isset($appearanceSettings->accent_color) ? $appearanceSettings->accent_color : "#ec4899" }}',
-                            500: '{{ isset($appearanceSettings->accent_color) ? $appearanceSettings->accent_color : "#ec4899" }}',
-                            600: '{{ isset($appearanceSettings->accent_color_600) ? $appearanceSettings->accent_color_600 : "#db2777" }}',
-                            700: '{{ isset($appearanceSettings->accent_color_700) ? $appearanceSettings->accent_color_700 : "#be185d" }}',
-                            foreground: '{{ isset($appearanceSettings->accent_color_foreground) ? $appearanceSettings->accent_color_foreground : "#ffffff" }}',
-                        },
-                        background: '{{ isset($appearanceSettings->background_color) ? $appearanceSettings->background_color : "#f8fafc" }}',
-                        foreground: '{{ isset($appearanceSettings->foreground_color) ? $appearanceSettings->foreground_color : "#1e293b" }}',
-                        card: {
-                            DEFAULT: '{{ isset($appearanceSettings->card_color) ? $appearanceSettings->card_color : "#ffffff" }}',
-                            foreground: '{{ isset($appearanceSettings->card_foreground_color) ? $appearanceSettings->card_foreground_color : "#1e293b" }}',
-                        },
-                        muted: {
-                            DEFAULT: '{{ isset($appearanceSettings->muted_color) ? $appearanceSettings->muted_color : "#f1f5f9" }}',
-                            foreground: '{{ isset($appearanceSettings->muted_foreground_color) ? $appearanceSettings->muted_foreground_color : "#64748b" }}',
-                        },
-                        border: '{{ isset($appearanceSettings->border_color) ? $appearanceSettings->border_color : "#e2e8f0" }}',
-                        input: '{{ isset($appearanceSettings->input_color) ? $appearanceSettings->input_color : "#e2e8f0" }}',
-                        ring: '{{ isset($appearanceSettings->ring_color) ? $appearanceSettings->ring_color : "#0ea5e9" }}',
-                        
-                        // Specific colors from original design for gradients/highlights
-                        'gradient-pink-from': '{{ isset($appearanceSettings->gradient_pink_from) ? $appearanceSettings->gradient_pink_from : "#ec4899" }}',
-                        'gradient-purple-via': '{{ isset($appearanceSettings->gradient_purple_via) ? $appearanceSettings->gradient_purple_via : "#a855f7" }}',
-                        'gradient-indigo-to': '{{ isset($appearanceSettings->gradient_indigo_to) ? $appearanceSettings->gradient_indigo_to : "#4f46e5" }}',
-                        
-                        // Utility colors
-                        'yellow-action': '{{ isset($appearanceSettings->yellow_action) ? $appearanceSettings->yellow_action : "#facc15" }}',
-                        'green-positive': '{{ isset($appearanceSettings->green_positive) ? $appearanceSettings->green_positive : "#22c55e" }}',
-                        'red-negative': '{{ isset($appearanceSettings->red_negative) ? $appearanceSettings->red_negative : "#ef4444" }}',
-                    },
-                    boxShadow: {
-                        'soft': '0 2px 15px -3px rgba(0, 0, 0, 0.07), 0 10px 20px -2px rgba(0, 0, 0, 0.04)',
-                        'top': '0 -4px 12px -1px rgba(0,0,0,0.05), 0 -2px 8px -1px rgba(0,0,0,0.03)',
-                    },
-                    borderRadius: {
-                        lg: '0.75rem',
-                        xl: '0.75rem', 
-                        '2xl': '1rem',
-                        '3xl': '1.5rem',
-                    },
-                    keyframes: {
-                        pulse: {
-                          '0%, 100%': { transform: 'scale(1)', boxShadow: '0 0 0 0 rgba(14, 165, 233, 0.4)' }, // primary color
-                          '50%': { transform: 'scale(1.05)', boxShadow: '0 0 0 10px rgba(14, 165, 233, 0)' },
-                        },
-                        shine: { 
-                          '0%': { transform: 'translateX(-100%) translateY(-100%) rotate(45deg)' },
-                          '100%': { transform: 'translateX(100%) translateY(100%) rotate(45deg)' },
-                        },
-                        shake: {
-                            '0%, 100%': { transform: 'translateX(0)' },
-                            '25%': { transform: 'translateX(-5px)' },
-                            '50%': { transform: 'translateX(5px)' },
-                            '75%': { transform: 'translateX(-5px)' },
-                        },
-                        'success-scale': {
-                            '0%': { transform: 'scale(1)' },
-                            '50%': { transform: 'scale(1.2)' },
-                            '100%': { transform: 'scale(1)' },
-                        },
-                        floatParticle: {
-                            '0%, 100%': { transform: 'translateY(0px) rotate(0deg)', opacity: '0.6' },
-                            '50%': { transform: 'translateY(-20px) rotate(180deg)', opacity: '1' },
-                        },
-                        rotateOrbit: {
-                            '0%': { transform: 'rotate(0deg)' },
-                            '100%': { transform: 'rotate(360deg)' },
-                        },
-                        spinInner: {
-                            '0%': { transform: 'rotate(0deg) scale(1)' },
-                            '50%': { transform: 'rotate(180deg) scale(1.1)' },
-                            '100%': { transform: 'rotate(360deg) scale(1)' },
-                        },
-                        coreGlow: {
-                            '0%': { 
-                                transform: 'translate(-50%, -50%) scale(0.8)', 
-                                boxShadow: '0 0 20px rgba(14, 165, 233, 0.6), 0 0 40px rgba(14, 165, 233, 0.3), inset 0 0 10px rgba(255, 255, 255, 0.3)'
-                            },
-                            '100%': {
-                                transform: 'translate(-50%, -50%) scale(1.2)', 
-                                boxShadow: '0 0 30px rgba(14, 165, 233, 0.8), 0 0 60px rgba(14, 165, 233, 0.4), inset 0 0 15px rgba(255, 255, 255, 0.5)'
-                            },
-                        },
-                        morphCore: {
-                            '0%, 100%': { borderRadius: '50%', backgroundPosition: '0% 50%' },
-                            '25%': { borderRadius: '40%', backgroundPosition: '100% 50%' },
-                            '50%': { borderRadius: '30%', backgroundPosition: '0% 50%' },
-                            '75%': { borderRadius: '40%', backgroundPosition: '100% 50%' },
-                        },
-                        textShimmer: {
-                            '0%': { backgroundPosition: '0% 50%' },
-                            '50%': { backgroundPosition: '100% 50%' },
-                            '100%': { backgroundPosition: '0% 50%' },
-                        },
-                        textGlow: {
-                            '0%': { opacity: '0.3' },
-                            '100%': { opacity: '0.7' },
-                        },
-                        subtitleFade: {
-                            '0%, 100%': { opacity: '0.5', transform: 'translateY(0px)' },
-                            '50%': { opacity: '1', transform: 'translateY(-2px)' },
-                        },
-                        progressSlide: {
-                            '0%': { left: '-100%' },
-                            '50%': { left: '0%' },
-                            '100%': { left: '100%' },
-                        }
-                    },
-                    animation: {
-                        'pulse-slow': 'pulse 2.5s infinite',
-                        'shine-once': 'shine 1.5s ease-in-out',
-                        'shake': 'shake 0.5s ease-in-out',
-                        'success': 'success-scale 0.6s ease-in-out',
-                    }
-                }
-            }
-        }
-    </script>
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="{{ asset('storage/app/public/' . ($settings->favicon ?? 'favicon.ico')) }}" type="image/x-icon">
     
-    @if(isset($appearanceSettings) && $appearanceSettings->custom_css)
-    <style>
-        {!! $appearanceSettings->custom_css !!}
-    </style>
-    @endif
-    
-    @if(isset($appearanceSettings) && $appearanceSettings->disable_animations)
-    <style>
-        * {
-            animation: none !important;
-            transition: none !important;
-        }
-    </style>
-    @endif
-    
-    <!-- Alpine.js -->
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    
-    <!-- Font Awesome 6 Pro -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/aquawolf04/font-awesome-pro@5cd1511/css/all.css">
-    
-    <!-- External Fonts -->
+    <!-- Google Fonts - Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
     <style>
+        /* ============================================================
+                   ROOT VARIABLES - Light Green & White Theme
+                   ============================================================ */
+        :root {
+            --primary: #10B981;
+            --primary-light: #34D399;
+            --primary-dark: #059669;
+            --primary-bg: #ECFDF5;
+            --primary-gradient: linear-gradient(135deg, #10B981 0%, #059669 100%);
+            
+            --white: #FFFFFF;
+            --gray-50: #F9FAFB;
+            --gray-100: #F3F4F6;
+            --gray-200: #E5E7EB;
+            --gray-300: #D1D5DB;
+            --gray-400: #9CA3AF;
+            --gray-500: #6B7280;
+            --gray-600: #4B5563;
+            --gray-700: #374151;
+            --gray-800: #1F2937;
+            --gray-900: #111827;
+            
+            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -1px rgba(0, 0, 0, 0.04);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.03);
+            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.08), 0 10px 10px -5px rgba(0, 0, 0, 0.02);
+            
+            --radius: 16px;
+            --radius-sm: 10px;
+            --radius-full: 9999px;
+            
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background-color: theme('colors.background');
-            color: theme('colors.foreground');
-        }
-
-        ::-webkit-scrollbar { width: 8px; height: 8px; }
-        ::-webkit-scrollbar-track { background: #e2e8f0; } /* slate-200 */
-        ::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 4px; } /* slate-400 */
-        ::-webkit-scrollbar-thumb:hover { background: #64748b; } /* slate-500 */
-
-        .dark ::-webkit-scrollbar-track { background: #374151; } /* gray-700 */
-        .dark ::-webkit-scrollbar-thumb { background: #6b7280; } /* gray-500 */
-        .dark ::-webkit-scrollbar-thumb:hover { background: #9ca3af; } /* gray-400 */
-
-        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
-        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; } /* slate-300 */
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; } /* slate-400 */
-
-        .dark .custom-scrollbar::-webkit-scrollbar-thumb { background: #6b7280; } /* gray-500 */
-        .dark .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #9ca3af; } /* gray-400 */
-
-        .shine-effect-container { position: relative; overflow: hidden; }
-        .shine-effect {
-            position: absolute; top: -50%; left: -50%;
-            width: 200%; height: 200%;
-            background-image: linear-gradient(to right, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.2) 50%, rgba(255, 255, 255, 0) 100%);
-            transform: rotate(45deg); opacity: 0; transition: opacity 0.5s;
-        }
-        .shine-effect-container:hover .shine-effect { opacity: 1; animation: shine-once 1.5s ease-in-out; }
-
-        .fade-in-section { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease-out, transform 0.6s ease-out; }
-        .fade-in-section.is-visible { opacity: 1; transform: translateY(0); }
-    </style>
-    
-    <!-- Ultra Modern Loading Animation -->
-    <style>
-        .page-loading {
-            position: fixed;
-            top: 0;
-            right: 0;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            transition: all .6s cubic-bezier(0.4, 0, 0.2, 1);
-            background: {{ isset($appearanceSettings->preloader_background) ? $appearanceSettings->preloader_background : 'radial-gradient(ellipse at center, rgba(14, 165, 233, 0.08) 0%, rgba(255, 255, 255, 0.95) 50%, rgba(255, 255, 255, 1) 100%)' }};
-            backdrop-filter: blur(2px);
-            visibility: hidden;
-            z-index: 9999;
-        }
-        
-        .dark .page-loading {
-            background: {{ isset($appearanceSettings->preloader_background_dark) ? $appearanceSettings->preloader_background_dark : 'radial-gradient(ellipse at center, rgba(14, 165, 233, 0.12) 0%, rgba(17, 24, 39, 0.95) 50%, rgba(17, 24, 39, 1) 100%)' }};
-        }
-        .page-loading.active {
-            opacity: 1;
-            visibility: visible;
-        }
-        .page-loading-inner {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            text-align: center;
-            transition: all .4s cubic-bezier(0.4, 0, 0.2, 1);
-            opacity: 0;
-        }
-        .page-loading.active>.page-loading-inner {
-            opacity: 1;
-        }
-        
-        .loading-container {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--gray-50);
+            min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            flex-direction: column;
-            position: relative;
+            padding: 20px;
+            margin: 0;
+            -webkit-font-smoothing: antialiased;
         }
-        
-        /* Floating particles background */
-        .loading-particles {
-            position: absolute;
-            width: 300px;
-            height: 300px;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
+
+        /* ============================================================
+                   LOADER
+                   ============================================================ */
+        .auth-loader {
+            position: fixed;
+            inset: 0;
+            background: var(--white);
+            z-index: 99999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.6s ease, visibility 0.6s ease;
+        }
+
+        .auth-loader.hidden {
+            opacity: 0;
+            visibility: hidden;
             pointer-events: none;
         }
-        
-        .particle {
-            position: absolute;
-            width: 4px;
-            height: 4px;
-            background: linear-gradient(45deg, {{ isset($appearanceSettings->preloader_accent_color) ? $appearanceSettings->preloader_accent_color : '#0ea5e9' }}, {{ isset($appearanceSettings->gradient_indigo_to) ? $appearanceSettings->gradient_indigo_to : '#6366f1' }});
+
+        .auth-loader-spinner {
+            width: 36px;
+            height: 36px;
+            border: 3px solid var(--gray-200);
+            border-top-color: var(--primary);
             border-radius: 50%;
-            opacity: 0.6;
-            animation: floatParticle 4s ease-in-out infinite;
+            animation: spin 0.8s linear infinite;
         }
-        
-        .particle:nth-child(1) { top: 20%; left: 20%; animation-delay: 0s; }
-        .particle:nth-child(2) { top: 80%; left: 80%; animation-delay: 0.5s; }
-        .particle:nth-child(3) { top: 60%; left: 20%; animation-delay: 1s; }
-        .particle:nth-child(4) { top: 30%; left: 70%; animation-delay: 1.5s; }
-        .particle:nth-child(5) { top: 70%; left: 30%; animation-delay: 2s; }
-        .particle:nth-child(6) { top: 10%; left: 60%; animation-delay: 2.5s; }
-        
-        .loading-animation {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 120px;
-            height: 120px;
-            margin-bottom: 2rem;
-            position: relative;
-            filter: drop-shadow(0 0 20px {{ isset($appearanceSettings->preloader_accent_color) ? 'rgba(' . implode(', ', sscanf(str_replace('#', '', $appearanceSettings->preloader_accent_color), '%02x%02x%02x')) . ', 0.2)' : 'rgba(14, 165, 233, 0.2)' }});
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
-        
-        /* Outer orbital rings */
-        .loading-animation .orbit-ring {
-            position: absolute;
-            border-radius: 50%;
-            border: 2px solid {{ isset($appearanceSettings->preloader_accent_color) ? 'rgba(' . implode(', ', sscanf(str_replace('#', '', $appearanceSettings->preloader_accent_color), '%02x%02x%02x')) . ', 0.2)' : 'rgba(14, 165, 233, 0.2)' }};
-            animation: rotateOrbit 8s linear infinite;
-        }
-        
-        .orbit-ring:nth-child(1) {
+
+        /* ============================================================
+                   AUTH CARD
+                   ============================================================ */
+        .auth-card {
             width: 100%;
-            height: 100%;
-            border-top: 2px solid {{ isset($appearanceSettings->preloader_accent_color) ? $appearanceSettings->preloader_accent_color : '#0ea5e9' }};
-            border-right: 2px solid {{ isset($appearanceSettings->preloader_accent_color) ? 'rgba(' . implode(', ', sscanf(str_replace('#', '', $appearanceSettings->preloader_accent_color), '%02x%02x%02x')) . ', 0.3)' : 'rgba(14, 165, 233, 0.3)' }};
-            animation-duration: 2s;
-        }
-        
-        .orbit-ring:nth-child(2) {
-            width: 80%;
-            height: 80%;
-            top: 10%;
-            left: 10%;
-            border-bottom: 2px solid {{ isset($appearanceSettings->preloader_accent_color) ? $appearanceSettings->preloader_accent_color : '#38bdf8' }};
-            border-left: 2px solid {{ isset($appearanceSettings->preloader_accent_color) ? 'rgba(' . implode(', ', sscanf(str_replace('#', '', $appearanceSettings->preloader_accent_color), '%02x%02x%02x')) . ', 0.3)' : 'rgba(56, 189, 248, 0.3)' }};
-            animation-duration: 2.5s;
-            animation-direction: reverse;
-        }
-        
-        .orbit-ring:nth-child(3) {
-            width: 60%;
-            height: 60%;
-            top: 20%;
-            left: 20%;
-            border-top: 2px solid {{ isset($appearanceSettings->preloader_accent_color) ? $appearanceSettings->preloader_accent_color : '#0284c7' }};
-            border-right: 2px solid {{ isset($appearanceSettings->preloader_accent_color) ? 'rgba(' . implode(', ', sscanf(str_replace('#', '', $appearanceSettings->preloader_accent_color), '%02x%02x%02x')) . ', 0.3)' : 'rgba(2, 132, 199, 0.3)' }};
-            animation-duration: 3s;
-        }
-        
-        /* Inner spinning circles */
-        .loading-animation .inner-circle {
-            position: absolute;
-            width: 15px;
-            height: 15px;
-            border-radius: 50%;
-            background: {{ isset($appearanceSettings->preloader_accent_color) ? $appearanceSettings->preloader_accent_color : '#0ea5e9' }};
-            box-shadow: 0 0 10px {{ isset($appearanceSettings->preloader_accent_color) ? 'rgba(' . implode(', ', sscanf(str_replace('#', '', $appearanceSettings->preloader_accent_color), '%02x%02x%02x')) . ', 0.6)' : 'rgba(14, 165, 233, 0.6)' }};
-            animation: spinInner 2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
-        }
-        
-        .inner-circle:nth-child(4) {
-            border-top: 3px solid {{ isset($appearanceSettings->preloader_accent_color) ? $appearanceSettings->preloader_accent_color : '#7dd3fc' }};
-            border-right: 3px solid {{ isset($appearanceSettings->preloader_accent_color) ? 'rgba(' . implode(', ', sscanf(str_replace('#', '', $appearanceSettings->preloader_accent_color), '%02x%02x%02x')) . ', 0.4)' : 'rgba(125, 211, 252, 0.4)' }};
-            animation-delay: 0s;
-        }
-        
-        .inner-circle:nth-child(5) {
-            border-bottom: 3px solid {{ isset($appearanceSettings->preloader_accent_color) ? $appearanceSettings->preloader_accent_color : '#bae6fd' }};
-            border-left: 3px solid {{ isset($appearanceSettings->preloader_accent_color) ? 'rgba(' . implode(', ', sscanf(str_replace('#', '', $appearanceSettings->preloader_accent_color), '%02x%02x%02x')) . ', 0.4)' : 'rgba(186, 230, 253, 0.4)' }};
-            animation-delay: 0.3s;
-            animation-direction: reverse;
-        }
-        
-        /* Glowing core with morphing effect */
-        .loading-animation .core {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            background: linear-gradient(45deg, {{ isset($appearanceSettings->preloader_accent_color) ? $appearanceSettings->preloader_accent_color : '#0ea5e9' }}, {{ isset($appearanceSettings->gradient_indigo_to) ? $appearanceSettings->gradient_indigo_to : '#6366f1' }});
-            background-size: 200% 200%;
-            box-shadow: 
-                0 0 20px {{ isset($appearanceSettings->preloader_accent_color) ? 'rgba(' . implode(', ', sscanf(str_replace('#', '', $appearanceSettings->preloader_accent_color), '%02x%02x%02x')) . ', 0.6)' : 'rgba(14, 165, 233, 0.6)' }},
-                0 0 40px {{ isset($appearanceSettings->preloader_accent_color) ? 'rgba(' . implode(', ', sscanf(str_replace('#', '', $appearanceSettings->preloader_accent_color), '%02x%02x%02x')) . ', 0.3)' : 'rgba(14, 165, 233, 0.3)' }},
-                inset 0 0 10px rgba(255, 255, 255, 0.3);
-            animation: coreGlow 2s ease-in-out infinite, morphCore 4s ease-in-out infinite;
-        }
-        
-        /* Enhanced text with multiple effects */
-        .page-loading .text {
-            font-weight: 700;
-            letter-spacing: 0.1em;
-            margin-top: 1.5rem;
-            font-size: 1.1rem;
+            max-width: 420px;
+            background: var(--white);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-xl);
+            padding: 40px 36px;
             position: relative;
-            background: linear-gradient(90deg, {{ isset($appearanceSettings->preloader_accent_color) ? $appearanceSettings->preloader_accent_color : '#0284c7' }}, {{ isset($appearanceSettings->preloader_accent_color) ? $appearanceSettings->preloader_accent_color : '#0ea5e9' }}, {{ isset($appearanceSettings->gradient_indigo_to) ? $appearanceSettings->gradient_indigo_to : '#6366f1' }}, {{ isset($appearanceSettings->preloader_accent_color) ? $appearanceSettings->preloader_accent_color : '#0ea5e9' }}, {{ isset($appearanceSettings->preloader_accent_color) ? $appearanceSettings->preloader_accent_color : '#0284c7' }});
-            background-size: 300% auto;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            animation: textShimmer 3s linear infinite;
-            text-shadow: 0 0 30px {{ isset($appearanceSettings->preloader_accent_color) ? 'rgba(' . implode(', ', sscanf(str_replace('#', '', $appearanceSettings->preloader_accent_color), '%02x%02x%02x')) . ', 0.3)' : 'rgba(14, 165, 233, 0.3)' }};
-        }
-        
-        .page-loading .text::before {
-            content: '';
-            position: absolute;
-            top: -2px;
-            left: -2px;
-            right: -2px;
-            bottom: -2px;
-            background: linear-gradient(45deg, transparent, {{ isset($appearanceSettings->preloader_accent_color) ? 'rgba(' . implode(', ', sscanf(str_replace('#', '', $appearanceSettings->preloader_accent_color), '%02x%02x%02x')) . ', 0.1)' : 'rgba(14, 165, 233, 0.1)' }}, transparent);
-            border-radius: 4px;
-            z-index: -1;
-            animation: textGlow 2s ease-in-out infinite alternate;
-        }
-        
-        /* Subtitle with fade effect */
-        .page-loading .subtitle {
-            font-size: 0.75rem;
-            color: {{ isset($appearanceSettings->muted_foreground_color) ? $appearanceSettings->muted_foreground_color : '#64748b' }};
-            font-weight: 500;
-            margin-top: 0.5rem;
-            letter-spacing: 0.05em;
-            animation: subtitleFade 2s ease-in-out infinite;
-        }
-        
-        /* Progress indicator */
-        .loading-progress {
-            width: 200px;
-            height: 2px;
-            background: {{ isset($appearanceSettings->muted_color) ? $appearanceSettings->muted_color : '#f1f5f9' }};
-            border-radius: 1px;
-            margin-top: 1.5rem;
             overflow: hidden;
-            position: relative;
+            animation: slideUp 0.5s ease-out;
         }
-        
-        .loading-progress::before {
+
+        .auth-card::before {
             content: '';
             position: absolute;
             top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, {{ isset($appearanceSettings->preloader_accent_color) ? $appearanceSettings->preloader_accent_color : '#0ea5e9' }}, transparent);
-            animation: progressSlide 2s ease-in-out infinite;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--primary-gradient);
         }
 
-        /* PIN Page Specific Styles */
-        .pin-dots {
-            display: flex;
-            gap: 12px;
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ============================================================
+                   HEADER
+                   ============================================================ */
+        .auth-header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .auth-logo {
+            display: inline-flex;
+            align-items: center;
             justify-content: center;
-            margin: 20px 0;
+            gap: 10px;
+            text-decoration: none;
+            margin-bottom: 20px;
         }
-        
-        .pin-dot {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background-color: {{ isset($appearanceSettings->muted_color) ? $appearanceSettings->muted_color : '#f1f5f9' }};
-            transition: all 0.3s ease;
+
+        .auth-logo img {
+            height: 40px;
+            width: 40px;
+            object-fit: contain;
+            border-radius: var(--radius-sm);
         }
-        
-        .pin-dot.filled {
-            background-color: {{ isset($appearanceSettings->primary_color) ? $appearanceSettings->primary_color : '#0ea5e9' }};
-            transform: scale(1.2);
-        }
-        
-        .dark .pin-dot {
-            background-color: {{ isset($appearanceSettings->muted_color_dark) ? $appearanceSettings->muted_color_dark : '#6b7280' }};
-        }
-        
-        .dark .pin-dot.filled {
-            background-color: {{ isset($appearanceSettings->primary_color) ? $appearanceSettings->primary_color : '#0ea5e9' }};
-        }
-        
-        .keypad-button {
-            width: 70px;
-            height: 70px;
-            border-radius: 50%;
+
+        .auth-logo-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--primary-bg);
+            border-radius: var(--radius-sm);
             display: flex;
             align-items: center;
             justify-content: center;
+            color: var(--primary);
+            font-size: 20px;
+        }
+
+        .auth-logo span {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--gray-800);
+            letter-spacing: -0.5px;
+        }
+
+        .auth-header h1 {
             font-size: 24px;
+            font-weight: 700;
+            color: var(--gray-900);
+            margin-bottom: 6px;
+            letter-spacing: -0.5px;
+        }
+
+        .auth-header p {
+            font-size: 14px;
+            color: var(--gray-500);
+            font-weight: 400;
+        }
+
+        /* ============================================================
+                   ALERTS
+                   ============================================================ */
+        .auth-alert {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 12px 14px;
+            border-radius: var(--radius-sm);
+            font-size: 13px;
+            font-weight: 500;
+            margin-bottom: 20px;
+            background: #FEF2F2;
+            color: #991B1B;
+            border: 1px solid #FECACA;
+        }
+
+        .auth-alert i {
+            font-size: 14px;
+            margin-top: 1px;
+            flex-shrink: 0;
+        }
+
+        .auth-alert-success {
+            background: #F0FDF4;
+            color: #065F46;
+            border-color: #BBF7D0;
+        }
+
+        .auth-alert ul {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        .auth-alert ul li {
+            margin-bottom: 2px;
+        }
+
+        .auth-alert ul li:last-child {
+            margin-bottom: 0;
+        }
+
+        /* ============================================================
+                   FORM
+                   ============================================================ */
+        .auth-form {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .form-group label {
+            font-size: 13px;
             font-weight: 600;
+            color: var(--gray-700);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .form-group label i {
+            color: var(--gray-400);
+            font-size: 12px;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-wrapper .input-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray-400);
+            font-size: 14px;
+            transition: var(--transition);
+            pointer-events: none;
+        }
+
+        .input-wrapper input {
+            width: 100%;
+            padding: 11px 12px 11px 40px;
+            font-size: 14px;
+            font-family: 'Inter', sans-serif;
+            font-weight: 400;
+            color: var(--gray-800);
+            background: var(--gray-50);
+            border: 2px solid var(--gray-200);
+            border-radius: var(--radius-sm);
+            transition: var(--transition);
+            outline: none;
+        }
+
+        .input-wrapper input:focus {
+            border-color: var(--primary);
+            background: var(--white);
+            box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.10);
+        }
+
+        .input-wrapper input:focus ~ .input-icon,
+        .input-wrapper input:focus + .input-icon {
+            color: var(--primary);
+        }
+
+        .input-wrapper input::placeholder {
+            color: var(--gray-400);
+            font-size: 13px;
+        }
+
+        .input-wrapper .toggle-password {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--gray-400);
             cursor: pointer;
-            transition: all 0.2s ease;
+            padding: 4px;
+            transition: var(--transition);
+            font-size: 14px;
+        }
+
+        .input-wrapper .toggle-password:hover {
+            color: var(--gray-600);
+        }
+
+        /* ============================================================
+                   FORM OPTIONS
+                   ============================================================ */
+        .form-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 2px 0;
+        }
+
+        .form-options .remember-me {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            color: var(--gray-600);
+            font-weight: 500;
             user-select: none;
-            background: {{ isset($appearanceSettings->muted_color) ? $appearanceSettings->muted_color : '#f1f5f9' }};
-            backdrop-filter: blur(10px);
-            border: 1px solid {{ isset($appearanceSettings->muted_color) ? $appearanceSettings->muted_color : '#f1f5f9' }};
-            color: white;
         }
-        
-        .keypad-button:hover {
-            background: {{ isset($appearanceSettings->muted_color_hover) ? $appearanceSettings->muted_color_hover : '#e2e8f0' }};
-            transform: scale(1.05);
+
+        .form-options .remember-me input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            accent-color: var(--primary);
+            border-radius: 4px;
+            cursor: pointer;
+            border: 2px solid var(--gray-300);
+            transition: var(--transition);
         }
-        
-        .keypad-button:active {
-            transform: scale(0.95);
+
+        .form-options .forgot-link {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--primary);
+            text-decoration: none;
+            transition: var(--transition);
         }
-        
-        .dark .keypad-button {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+
+        .form-options .forgot-link:hover {
+            color: var(--primary-dark);
+            text-decoration: underline;
         }
-        
-        .dark .keypad-button:hover {
-            background: rgba(255, 255, 255, 0.1);
-        }
-        
-        /* Desktop PIN Styles */
-        .desktop-pin-container {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-        
-        .dark .desktop-pin-container {
-            background: rgba(31, 41, 55, 0.95);
-            border: 1px solid rgba(75, 85, 99, 0.3);
-        }
-        
-        /* Ripple Effect */
-        .ripple {
+
+        /* ============================================================
+                   SUBMIT BUTTON
+                   ============================================================ */
+        .submit-btn {
+            width: 100%;
+            padding: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            color: var(--white);
+            background: var(--primary-gradient);
+            border: none;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 2px;
             position: relative;
             overflow: hidden;
         }
-        
-        .ripple::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.3);
-            transform: translate(-50%, -50%);
-            transition: width 0.6s, height 0.6s;
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.30);
         }
-        
-        .ripple:active::before {
-            width: 300px;
-            height: 300px;
+
+        .submit-btn:active {
+            transform: translateY(0) scale(0.98);
+        }
+
+        .submit-btn i {
+            transition: var(--transition);
+        }
+
+        .submit-btn:hover i {
+            transform: translateX(3px);
+        }
+
+        /* ============================================================
+                   DIVIDER
+                   ============================================================ */
+        .divider {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin: 2px 0;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--gray-200);
+        }
+
+        .divider span {
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--gray-400);
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            white-space: nowrap;
+        }
+
+        /* ============================================================
+                   SOCIAL BUTTONS
+                   ============================================================ */
+        .social-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .social-btn {
+            padding: 10px;
+            font-size: 13px;
+            font-weight: 500;
+            font-family: 'Inter', sans-serif;
+            background: var(--white);
+            color: var(--gray-700);
+            border: 2px solid var(--gray-200);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .social-btn:hover {
+            border-color: var(--gray-300);
+            background: var(--gray-50);
+            transform: translateY(-1px);
+        }
+
+        .social-btn i {
+            font-size: 16px;
+        }
+
+        .social-btn.google i {
+            color: #EA4335;
+        }
+
+        .social-btn.apple i {
+            color: #000;
+        }
+
+        /* ============================================================
+                   ALTERNATE ACTION
+                   ============================================================ */
+        .alternate-action {
+            text-align: center;
+            font-size: 14px;
+            color: var(--gray-600);
+            font-weight: 500;
+        }
+
+        .alternate-action a {
+            color: var(--primary);
+            font-weight: 600;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .alternate-action a:hover {
+            color: var(--primary-dark);
+            text-decoration: underline;
+        }
+
+        /* ============================================================
+                   FOOTER
+                   ============================================================ */
+        .auth-footer {
+            margin-top: 24px;
+            display: flex;
+            justify-content: center;
+            gap: 18px;
+            flex-wrap: wrap;
+        }
+
+        .auth-footer a {
+            font-size: 12px;
+            color: var(--gray-400);
+            text-decoration: none;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .auth-footer a:hover {
+            color: var(--gray-600);
+        }
+
+        /* ============================================================
+                   RESPONSIVE
+                   ============================================================ */
+        @media (max-width: 480px) {
+            .auth-card {
+                padding: 28px 20px;
+                border-radius: var(--radius-sm);
+            }
+
+            .auth-header h1 {
+                font-size: 20px;
+            }
+
+            .auth-logo span {
+                font-size: 17px;
+            }
+
+            .auth-logo img,
+            .auth-logo-icon {
+                height: 32px;
+                width: 32px;
+            }
+
+            .social-buttons {
+                grid-template-columns: 1fr;
+            }
+
+            .form-options {
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+
+            .submit-btn {
+                padding: 10px;
+                font-size: 14px;
+            }
+
+            .auth-footer {
+                gap: 12px;
+            }
+        }
+
+        /* ============================================================
+                   DARK MODE SUPPORT
+                   ============================================================ */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --gray-50: #1F2937;
+                --gray-100: #374151;
+                --gray-200: #4B5563;
+                --gray-300: #6B7280;
+                --gray-400: #9CA3AF;
+                --gray-500: #D1D5DB;
+                --gray-600: #E5E7EB;
+                --gray-700: #F3F4F6;
+                --gray-800: #F9FAFB;
+                --gray-900: #FFFFFF;
+                
+                --white: #111827;
+                --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.1);
+            }
+
+            .auth-card::before {
+                background: var(--primary-gradient);
+            }
+
+            .auth-loader {
+                background: var(--white);
+            }
+
+            .auth-alert {
+                background: rgba(254, 242, 242, 0.08);
+                color: #FCA5A5;
+                border-color: rgba(252, 165, 165, 0.2);
+            }
+
+            .auth-alert-success {
+                background: rgba(240, 253, 244, 0.08);
+                color: #6EE7B7;
+                border-color: rgba(107, 231, 183, 0.2);
+            }
+
+            .social-btn {
+                background: var(--gray-50);
+                color: var(--gray-700);
+                border-color: var(--gray-200);
+            }
+
+            .social-btn:hover {
+                background: var(--gray-100);
+                border-color: var(--gray-300);
+            }
+
+            .social-btn.apple i {
+                color: var(--gray-700);
+            }
         }
     </style>
+
+    @stack('styles')
 </head>
 
-<body class="font-sans bg-background text-foreground {{ isset($appearanceSettings->disable_animations) && $appearanceSettings->disable_animations ? 'no-animations' : '' }}">
-    <!-- Ultra Modern Page Loader -->
-    <div class="page-loading active">
-        <div class="page-loading-inner">
-            <div class="loading-container">
-                <!-- Floating particles background -->
-                <div class="loading-particles">
-                    <div class="particle"></div>
-                    <div class="particle"></div>
-                    <div class="particle"></div>
-                    <div class="particle"></div>
-                    <div class="particle"></div>
-                    <div class="particle"></div>
-                </div>
-                
-                <!-- Main loading animation -->
-                <div class="loading-animation">
-                    <!-- Outer orbital rings -->
-                    <div class="orbit-ring"></div>
-                    <div class="orbit-ring"></div>
-                    <div class="orbit-ring"></div>
-                    
-                    <!-- Inner spinning circles -->
-                    <div class="inner-circle"></div>
-                    <div class="inner-circle"></div>
-                    
-                    <!-- Morphing glowing core -->
-                    <div class="core"></div>
-                </div>
-                
-                <!-- Enhanced text with effects -->
-                <div class="text">{{ $settings->site_name }}</div>
-                <div class="subtitle">Secure Banking Platform</div>
-            </div>
+<body>
+
+    <!-- ============================================================
+    PRELOADER
+    ============================================================ -->
+    <div class="auth-loader" id="authLoader">
+        <div class="auth-loader-spinner"></div>
+    </div>
+
+    <!-- ============================================================
+    AUTH CARD
+    ============================================================ -->
+    <div class="auth-card" id="authCard">
+
+        <!-- Header -->
+        <div class="auth-header">
+            <a href="/" class="auth-logo">
+                @if(isset($settings) && $settings->logo)
+                    <img src="{{ asset('storage/app/public/' . $settings->logo) }}" alt="{{ $settings->site_name ?? 'Logo' }}" style="object-fit: contain; width: 100px; height: 100px;">
+                @else
+                    <div class="auth-logo-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                @endif
+            </a>
+            <h1>@yield('form_title', 'Welcome Back')</h1>
+            <p>@yield('form_subtitle', 'Sign in to your account')</p>
         </div>
+
+        <!-- Alerts -->
+        @if (Session::has('status'))
+            <div class="auth-alert auth-alert-success" role="alert">
+                <i class="fas fa-check-circle"></i>
+                <span>{{ session('status') }}</span>
+            </div>
+        @endif
+
+        @if ($errors->any())
+            <div class="auth-alert" role="alert">
+                <i class="fas fa-exclamation-circle"></i>
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
+        <!-- Form Content -->
+        @yield('auth_form')
+
+
     </div>
 
-    <!-- Dark Mode Toggle - Floating button -->
-    <div class="fixed top-4 right-4 z-50">
-        <button @click="darkMode = !darkMode; localStorage.setItem('darkMode', darkMode); darkMode ? document.documentElement.classList.add('dark') : document.documentElement.classList.remove('dark')" 
-                class="p-3 rounded-full bg-white/10 dark:bg-gray-800/50 text-gray-700 dark:text-gray-300 backdrop-blur-md border border-white/20 dark:border-gray-700/50 transition-all duration-300 hover:bg-white/20 dark:hover:bg-gray-800/70"
-                :title="darkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'">
-            <i class="fas fa-sun text-sm" x-show="darkMode"></i>
-            <i class="fas fa-moon text-sm" x-show="!darkMode"></i>
-        </button>
-    </div>
-
-    <!-- Main Content -->
-    <div class="min-h-screen">
-        @yield('content')
-    </div>
-
-    <!-- Enhanced Page Loading Animation -->
+    <!-- ============================================================
+    SCRIPTS
+    ============================================================ -->
     <script>
-        window.onload = function() {
-            const preloader = document.querySelector('.page-loading');
-            
-            // Add a slight delay to make loading animation more noticeable
+        // ============================================================
+        // PRELOADER
+        // ============================================================
+        document.addEventListener('DOMContentLoaded', function() {
             setTimeout(function() {
-                preloader.classList.remove('active');
-                setTimeout(function() {
-                    preloader.remove();
-                }, 500);
-            }, 800);
-        };
+                const loader = document.getElementById('authLoader');
+                if (loader) {
+                    loader.classList.add('hidden');
+                }
+            }, 500);
+        });
+
+        // ============================================================
+        // TOGGLE PASSWORD VISIBILITY
+        // ============================================================
+        function togglePasswordVisibility(button) {
+            const wrapper = button.closest('.input-wrapper');
+            const input = wrapper.querySelector('input');
+            const icon = button.querySelector('i');
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
+
+        // ============================================================
+        // RIPPLE EFFECT ON BUTTONS
+        // ============================================================
+        document.querySelectorAll('.submit-btn, .social-btn').forEach(button => {
+            button.addEventListener('click', function(e) {
+                const ripple = document.createElement('span');
+                const rect = this.getBoundingClientRect();
+                const size = Math.max(rect.width, rect.height);
+                const x = e.clientX - rect.left - size / 2;
+                const y = e.clientY - rect.top - size / 2;
+                
+                ripple.style.cssText = `
+                    position: absolute;
+                    border-radius: 50%;
+                    background: ${this.classList.contains('submit-btn') ? 'rgba(255,255,255,0.2)' : 'rgba(16,185,129,0.15)'};
+                    width: ${size}px;
+                    height: ${size}px;
+                    left: ${x}px;
+                    top: ${y}px;
+                    pointer-events: none;
+                    transform: scale(0);
+                    animation: rippleEffect 0.6s linear forwards;
+                `;
+                
+                this.style.position = 'relative';
+                this.style.overflow = 'hidden';
+                this.appendChild(ripple);
+                
+                setTimeout(() => {
+                    ripple.remove();
+                }, 600);
+            });
+        });
+
+        // Inject ripple keyframes
+        if (!document.getElementById('rippleStyles')) {
+            const style = document.createElement('style');
+            style.id = 'rippleStyles';
+            style.textContent = `
+                @keyframes rippleEffect {
+                    to {
+                        transform: scale(4);
+                        opacity: 0;
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+        }
+
+        // ============================================================
+        // INPUT FOCUS EFFECT
+        // ============================================================
+        document.querySelectorAll('.input-wrapper input').forEach(input => {
+            const wrapper = input.closest('.input-wrapper');
+            const icon = wrapper.querySelector('.input-icon');
+            
+            input.addEventListener('focus', function() {
+                if (icon) {
+                    icon.style.color = 'var(--primary)';
+                }
+            });
+            
+            input.addEventListener('blur', function() {
+                if (!this.value && icon) {
+                    icon.style.color = 'var(--gray-400)';
+                }
+            });
+        });
     </script>
-    @include('layouts.livechat')
-    @yield('scripts')
+
+    @stack('scripts')
 </body>
 </html>

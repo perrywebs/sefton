@@ -3,231 +3,311 @@
 @section('title', 'About Us')
 
 @section('content')
-<!-- About Hero Section -->
-<section class="relative py-16 lg:py-20 bg-gradient-to-br from-slate-900 via-primary-900 to-gray-900 dark:from-gray-900 dark:via-primary-900 dark:to-black overflow-hidden">
-    <!-- Background Effects -->
-    <div class="absolute inset-0">
-        <div class="absolute inset-0 opacity-10">
-            <div class="absolute top-0 left-0 w-full h-full" style="background-image: radial-gradient(circle at 25% 25%, #ffffff 1px, transparent 1px), radial-gradient(circle at 75% 75%, #ffffff 1px, transparent 1px); background-size: 60px 60px; animation: float 20s ease-in-out infinite;"></div>
-        </div>
-        <div class="absolute top-20 left-20 w-96 h-96 bg-primary-500/20 rounded-full blur-3xl animate-pulse"></div>
-        <div class="absolute bottom-20 right-20 w-80 h-80 bg-teal-500/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
-    </div>
-    
-    <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="text-center mb-12">
-            <div class="inline-flex items-center px-4 py-2 bg-white/10 backdrop-blur-sm text-white/90 rounded-full text-sm font-semibold mb-6 border border-white/20">
-                <i class="fa-solid fa-building-columns mr-2"></i>
-                Our Story
-            </div>
-            <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-4">
-                About {{ $settings->site_name }}
-            </h1>
-            <p class="text-xl text-gray-300 max-w-3xl mx-auto">
-                Trusted banking partner committed to your financial success since our founding
-            </p>
-        </div>
-    </div>
-</section>
 
-<!-- Mission & Vision Section -->
-<section class="py-16 bg-white dark:bg-gray-900">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="grid lg:grid-cols-2 gap-12 items-center">
-            <div>
-                <h2 class="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-6">
-                    Our Mission
-                </h2>
-                <p class="text-lg text-gray-600 dark:text-gray-300 mb-6">
-                    At {{ $settings->site_name }}, we're dedicated to empowering individuals, families, and businesses to achieve their financial goals through innovative banking solutions, personalized service, and unwavering commitment to excellence.
-                </p>
-                <p class="text-lg text-gray-600 dark:text-gray-300">
-                    We believe that banking should be simple, secure, and accessible to everyone, which is why we continuously invest in technology and training to deliver the best possible experience for our customers.
-                </p>
-            </div>
-            <div class="relative">
-                <div class="aspect-[4/3] rounded-2xl overflow-hidden shadow-2xl">
-                    <img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
-                         alt="Modern banking office" 
-                         class="w-full h-full object-cover">
-                </div>
-                <div class="absolute -bottom-6 -right-6 bg-primary-600 text-white p-6 rounded-2xl shadow-xl">
-                    <div class="text-2xl font-bold">50K+</div>
-                    <div class="text-sm">Happy Customers</div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Values Section -->
-<section class="py-16 bg-gray-50 dark:bg-gray-800">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="text-center mb-12">
-            <h2 class="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-4">
-                Our Core Values
-            </h2>
-            <p class="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-                These values guide everything we do and shape our commitment to our customers and community
-            </p>
-        </div>
-
-        <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <div class="text-center group">
-                <div class="w-16 h-16 bg-primary-100 dark:bg-primary-900/30 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
-                    <i class="fa-solid fa-shield-halved text-2xl text-primary-600 dark:text-primary-400"></i>
-                </div>
-                <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Trust & Security</h3>
-                <p class="text-gray-600 dark:text-gray-300">Your financial security is our top priority with industry-leading protection measures.</p>
-            </div>
-
-            <div class="text-center group">
-                <div class="w-16 h-16 bg-teal-100 dark:bg-teal-900/30 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
-                    <i class="fa-solid fa-lightbulb text-2xl text-teal-600 dark:text-teal-400"></i>
-                </div>
-                <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Innovation</h3>
-                <p class="text-gray-600 dark:text-gray-300">We embrace cutting-edge technology to deliver modern banking solutions.</p>
-            </div>
-
-            <div class="text-center group">
-                <div class="w-16 h-16 bg-purple-100 dark:bg-purple-900/30 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
-                    <i class="fa-solid fa-heart text-2xl text-purple-600 dark:text-purple-400"></i>
-                </div>
-                <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Customer Care</h3>
-                <p class="text-gray-600 dark:text-gray-300">Personalized service and support whenever you need it, however you prefer.</p>
-            </div>
-
-            <div class="text-center group">
-                <div class="w-16 h-16 bg-orange-100 dark:bg-orange-900/30 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
-                    <i class="fa-solid fa-users text-2xl text-orange-600 dark:text-orange-400"></i>
-                </div>
-                <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Community</h3>
-                <p class="text-gray-600 dark:text-gray-300">Supporting local communities and contributing to economic growth.</p>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- History Section -->
-<section class="py-16 bg-white dark:bg-gray-900">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="text-center mb-12">
-            <h2 class="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-4">
-                Our Journey
-            </h2>
-            <p class="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-                From humble beginnings to becoming a trusted financial institution
-            </p>
-        </div>
-
-        <div class="space-y-8">
-            <div class="flex flex-col md:flex-row items-center gap-8">
-                <div class="md:w-1/3">
-                    <div class="bg-primary-100 dark:bg-primary-900/30 rounded-2xl p-6 text-center">
-                        <div class="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-2">1985</div>
-                        <div class="text-gray-900 dark:text-white font-semibold">Founded</div>
+    <!--   hero area start   -->
+    <div class="about-bg breadcrumb-area about">
+        <div class="container">
+            <div class="service breadcrumb-txt">
+                <div class="row">
+                    <div class="col-xl-7 col-lg-8 col-sm-10">
+                        <span>Company Overview</span>
+                        <h1>We are 100%Trusted Financial Experts</h1>
+                        <ul class="breadcumb">
+                            <li><a href="/">Home</a></li>
+                            <li>Company overview</li>
+                        </ul>
                     </div>
                 </div>
-                <div class="md:w-2/3">
-                    <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">The Beginning</h3>
-                    <p class="text-gray-600 dark:text-gray-300">{{ $settings->site_name }} was founded with a simple mission: to provide honest, reliable banking services to our local community.</p>
-                </div>
             </div>
+        </div>
+        <div class="breadcrumb-area-overlay"></div>
+    </div>
+    <!--   hero area end    -->
 
-            <div class="flex flex-col md:flex-row-reverse items-center gap-8">
-                <div class="md:w-1/3">
-                    <div class="bg-teal-100 dark:bg-teal-900/30 rounded-2xl p-6 text-center">
-                        <div class="text-3xl font-bold text-teal-600 dark:text-teal-400 mb-2">2005</div>
-                        <div class="text-gray-900 dark:text-white font-semibold">Digital Era</div>
+
+    <!--   about company section start   -->
+    <div class="about-company-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-5">
+                    <span class="section-title">About company</span>
+                    <h2 class="section-summary">We look forward to getting to know you here's a little about us</h2>
+                    <div class="about-company-txt">
+                        <p>Our philosophy is simple: our entire business is centred on you and your goals. Financial
+                            planning is not about money, it’s about finding ways to help you achieve your goals through
+                            careful and thoughtful planning and execution.</p>
+                        <p>Of course money is generally central to that in today’s world; but it is not a goal in itself.
+                            It’s a means of reaching your goals whatever they might be.</p>
+                        <p>At Spring we help you identify, assess and shape those goals so your plans and actions are always
+                            focused on achieving them. whatever they might be.</p>
                     </div>
                 </div>
-                <div class="md:w-2/3 text-right">
-                    <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Online Banking Launch</h3>
-                    <p class="text-gray-600 dark:text-gray-300">We embraced the digital revolution, launching our first online banking platform to serve customers 24/7.</p>
-                </div>
-            </div>
-
-            <div class="flex flex-col md:flex-row items-center gap-8">
-                <div class="md:w-1/3">
-                    <div class="bg-purple-100 dark:bg-purple-900/30 rounded-2xl p-6 text-center">
-                        <div class="text-3xl font-bold text-purple-600 dark:text-purple-400 mb-2">2015</div>
-                        <div class="text-gray-900 dark:text-white font-semibold">Mobile First</div>
+                <div class="offset-lg-1 col-lg-6">
+                    <div class="tile-gallery">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="big-img big-img-bg"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="small-img small-img-bg-1"></div>
+                            </div>
+                            <div class="col-6">
+                                <div class="small-img small-img-bg-2"></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="md:w-2/3">
-                    <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Mobile Banking Revolution</h3>
-                    <p class="text-gray-600 dark:text-gray-300">Launched our award-winning mobile app, making banking accessible anywhere, anytime.</p>
-                </div>
             </div>
-
-            <div class="flex flex-col md:flex-row-reverse items-center gap-8">
-                <div class="md:w-1/3">
-                    <div class="bg-orange-100 dark:bg-orange-900/30 rounded-2xl p-6 text-center">
-                        <div class="text-3xl font-bold text-orange-600 dark:text-orange-400 mb-2">Today</div>
-                        <div class="text-gray-900 dark:text-white font-semibold">Innovation</div>
+            <div class="choose-us">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="single-reason">
+                            <div class="about-icon-wrapper"> <i class="flaticon-reload"></i> </div>
+                            <div class="reason-txt">
+                                <h4>Inspired</h4>
+                                <p>Plans require action or they are just words – at Spring we work with you to implement
+                                    your strategic plans</p>
+                            </div>
+                        </div>
                     </div>
-                </div>
-                <div class="md:w-2/3 text-right">
-                    <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Leading the Future</h3>
-                    <p class="text-gray-600 dark:text-gray-300">Continuing to innovate with AI-powered services, advanced security, and sustainable banking practices.</p>
+                    <div class="col-md-4">
+                        <div class="single-reason">
+                            <div class="about-icon-wrapper"> <i class="flaticon-organize"></i> </div>
+                            <div class="reason-txt">
+                                <h4>Different</h4>
+                                <p>Goals without a plan are just a dream – so at Spring our team of industry experts will
+                                    work with you to develop strategic plans.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="single-reason">
+                            <div class="about-icon-wrapper"> <i class="flaticon-arrow-on-the-center-of-the-target"></i>
+                            </div>
+                            <div class="reason-txt">
+                                <h4>Trusted</h4>
+                                <p>Great financial advice starts with an understanding of your personal, financial and
+                                    lifestyle goals At Spring we help you.</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</section>
+    <!--   about company section end   -->
 
-<!-- Stats Section -->
-<section class="py-16 bg-primary-600 dark:bg-primary-700">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="text-center mb-12">
-            <h2 class="text-3xl lg:text-4xl font-bold text-white mb-4">
-                By the Numbers
-            </h2>
-            <p class="text-xl text-primary-100">
-                Our growth reflects the trust our customers place in us
-            </p>
+
+    <!--    call to action section start    -->
+    <div class="cta-section cta-bg">
+        <div class="container">
+            <div class="cta-content">
+                <div class="row">
+                    <div class="col-md-9 col-lg-7">
+                        <h3>Contact us for help with your finances.</h3>
+                    </div>
+                    <div class="col-md-3 col-lg-5 contact-btn-wrapper">
+                        <a href="/contact" class="boxed-btn contact-btn"><span>Contact Us</span></a>
+                    </div>
+                </div>
+            </div>
         </div>
+        <div class="cta-overlay"></div>
+    </div>
+    <!--    call to action section end    -->
 
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-8">
-            <div class="text-center">
-                <div class="text-4xl lg:text-5xl font-bold text-white mb-2">50K+</div>
-                <div class="text-primary-100">Active Customers</div>
+
+    <!--   testimonial section start    -->
+    <div class="testimonial-section about">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6">
+                    <span class="section-title">Testimonial</span>
+                    <h2 class="section-summary">What people say about finlance planning</h2>
+                </div>
             </div>
-            <div class="text-center">
-                <div class="text-4xl lg:text-5xl font-bold text-white mb-2">$2.5B</div>
-                <div class="text-primary-100">Assets Under Management</div>
-            </div>
-            <div class="text-center">
-                <div class="text-4xl lg:text-5xl font-bold text-white mb-2">25</div>
-                <div class="text-primary-100">Branch Locations</div>
-            </div>
-            <div class="text-center">
-                <div class="text-4xl lg:text-5xl font-bold text-white mb-2">99.9%</div>
-                <div class="text-primary-100">Uptime Guarantee</div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="testimonial-carousel owl-carousel owl-theme">
+                        <div class="single-testimonial">
+                            <div class="img-wrapper"><img src="assets/img/testimonial/client-1.jpg" alt=""></div>
+                            <div class="client-desc">
+                                <p class="comment">They provide innovative solutions with the best. tempor incididunt utla
+                                    bore et dolor tempor incididunt .</p>
+                                <h6 class="name">Jonathon doe</h6>
+                                <p class="rank">Director, art media</p>
+                            </div>
+                        </div>
+                        <div class="single-testimonial">
+                            <div class="img-wrapper"><img src="assets/img/testimonial/client-2.jpg" alt=""></div>
+                            <div class="client-desc">
+                                <p class="comment">They provide innovative solutions with the best. tempor incididunt utla
+                                    bore et dolor tempor incididunt .</p>
+                                <h6 class="name">Jonathon doe</h6>
+                                <p class="rank">Director, art media</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-</section>
+    <!--   testimonial section end    -->
 
-<!-- CTA Section -->
-<section class="py-16 bg-white dark:bg-gray-900">
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <h2 class="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-4">
-            Ready to Join Our Family?
-        </h2>
-        <p class="text-xl text-gray-600 dark:text-gray-300 mb-8">
-            Experience the difference of banking with a trusted partner who puts your financial success first.
-        </p>
-        <div class="flex flex-col sm:flex-row gap-4 justify-center">
-            <a href="{{ route('register') }}" class="inline-flex items-center px-8 py-4 bg-primary-600 hover:bg-primary-700 text-white font-bold rounded-2xl transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-1">
-                <i class="fa-solid fa-user-plus mr-3"></i>
-                Open an Account
-            </a>
-            <a href="{{ route('contact') }}" class="inline-flex items-center px-8 py-4 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-900 dark:text-white font-semibold rounded-2xl transition-all duration-300">
-                <i class="fa-solid fa-phone mr-3"></i>
-                Contact Us
-            </a>
+
+    <!--    team section start   -->
+    <div class="team-section about">
+        <div class="team-content">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <span class="section-title">Executive Team</span>
+                        <h2 class="section-summary">Meet our expert finlance executive team
+                        </h2>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-3 col-sm-6">
+                        <div class="single-team-member">
+                            <div class="team-img-wrapper">
+                                <img src="assets/img/team/member-1.jpg" alt="">
+                                <div class="social-accounts">
+                                    <ul class="social-account-lists">
+                                        <li class="single-social-account"><a href="#"><i
+                                                    class="fab fa-facebook-f"></i></a></li>
+                                        <li class="single-social-account"><a href="#"><i
+                                                    class="fab fa-twitter"></i></a></li>
+                                        <li class="single-social-account"><a href="#"><i
+                                                    class="fab fa-linkedin-in"></i></a></li>
+                                        <li class="single-social-account"><a href="#"><i
+                                                    class="fab fa-instagram"></i></a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="member-info">
+                                <h5 class="member-name">Admond harb</h5>
+                                <small>Advisor</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-sm-6">
+                        <div class="single-team-member">
+                            <div class="team-img-wrapper">
+                                <img src="assets/img/team/member-2.jpg" alt="">
+                                <div class="social-accounts">
+                                    <ul class="social-account-lists">
+                                        <li class="single-social-account"><a href="#"><i
+                                                    class="fab fa-facebook-f"></i></a></li>
+                                        <li class="single-social-account"><a href="#"><i
+                                                    class="fab fa-twitter"></i></a></li>
+                                        <li class="single-social-account"><a href="#"><i
+                                                    class="fab fa-linkedin-in"></i></a></li>
+                                        <li class="single-social-account"><a href="#"><i
+                                                    class="fab fa-instagram"></i></a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="member-info">
+                                <h5 class="member-name">Helen fox</h5>
+                                <small>Managing Director</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-sm-6">
+                        <div class="single-team-member">
+                            <div class="team-img-wrapper">
+                                <img src="assets/img/team/member-3.jpg" alt="">
+                                <div class="social-accounts">
+                                    <ul class="social-account-lists">
+                                        <li class="single-social-account"><a href="#"><i
+                                                    class="fab fa-facebook-f"></i></a></li>
+                                        <li class="single-social-account"><a href="#"><i
+                                                    class="fab fa-twitter"></i></a></li>
+                                        <li class="single-social-account"><a href="#"><i
+                                                    class="fab fa-linkedin-in"></i></a></li>
+                                        <li class="single-social-account"><a href="#"><i
+                                                    class="fab fa-instagram"></i></a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="member-info">
+                                <h5 class="member-name">Alen Donald</h5>
+                                <small>Managing Director</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-sm-6">
+                        <div class="single-team-member">
+                            <div class="team-img-wrapper">
+                                <img src="assets/img/team/member-4.jpg" alt="">
+                                <div class="social-accounts">
+                                    <ul class="social-account-lists">
+                                        <li class="single-social-account"><a href="#"><i
+                                                    class="fab fa-facebook-f"></i></a></li>
+                                        <li class="single-social-account"><a href="#"><i
+                                                    class="fab fa-twitter"></i></a></li>
+                                        <li class="single-social-account"><a href="#"><i
+                                                    class="fab fa-linkedin-in"></i></a></li>
+                                        <li class="single-social-account"><a href="#"><i
+                                                    class="fab fa-instagram"></i></a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="member-info">
+                                <h5 class="member-name">Hrver Pual</h5>
+                                <small>Sales And Marketting</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-</section>
-@endsection 
+    <!--    team section end   -->
+
+
+    <!--   partner section start    -->
+    <div class="partner-section">
+        <div class="container top-border">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="partner-carousel owl-carousel owl-theme">
+                        <div class="single-partner-item">
+                            <div class="outer-container">
+                                <div class="inner-container"> <img src="assets/img/partners/partner-1.png"
+                                        alt=""> </div>
+                            </div>
+                        </div>
+                        <div class="single-partner-item">
+                            <div class="outer-container">
+                                <div class="inner-container"> <img src="assets/img/partners/partner-2.png"
+                                        alt=""> </div>
+                            </div>
+                        </div>
+                        <div class="single-partner-item">
+                            <div class="outer-container">
+                                <div class="inner-container"> <img src="assets/img/partners/partner-3.png"
+                                        alt=""> </div>
+                            </div>
+                        </div>
+                        <div class="single-partner-item">
+                            <div class="outer-container">
+                                <div class="inner-container"> <img src="assets/img/partners/partner-4.png"
+                                        alt=""> </div>
+                            </div>
+                        </div>
+                        <div class="single-partner-item">
+                            <div class="outer-container">
+                                <div class="inner-container"> <img src="assets/img/partners/partner-5.png"
+                                        alt=""> </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--   partner section end    -->
+@endsection
