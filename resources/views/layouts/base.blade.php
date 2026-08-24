@@ -6,7 +6,25 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Finlance - Financial Planning HTML Template</title>
+    <meta name="google-site-verification" content="2FxdVZ1e0pMgOZpWqJMcCkeq4w2J73GGb2LrrvMLDEA" />
+    <!-- Standard & Search Engine Description -->
+    <meta name="description" content="{{ $settings->description }}">
+
+    <!-- Open Graph / Facebook / LinkedIn / WhatsApp -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ url()->current() }}">
+    <meta property="og:title" content="{{ $settings->site_title }}">
+    <meta property="og:description" content="{{ $settings->description }}">
+    <meta property="og:image" content="{{ asset('storage/app/public/' . $settings->logo) }}">
+
+    <!-- Twitter Cards -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="{{ url()->current() }}">
+    <meta name="twitter:title" content="{{ $settings->site_title }}">
+    <meta name="twitter:description" content="{{ $settings->description }}">
+    <meta name="twitter:image" content="{{ asset('storage/app/public/' . $settings->logo) }}">
+
+    <title>{{ $settings->site_title }}</title>
     <!-- favicon -->
     <link rel="shortcut icon" href={{ asset('storage/app/public/' . $settings->favicon) }} type="image/x-icon">
     <!-- bootstrap css -->
@@ -393,7 +411,8 @@
                 <div class="row">
                     <div class="col-lg-2 col-6">
                         <div class="logo-wrapper">
-                            <a href="index-1.html"><img src="{{ asset('storage/app/public/' . $settings->logo) }}" alt=""></a>
+                            <a href="index-1.html"><img src="{{ asset('storage/app/public/' . $settings->logo) }}"
+                                    alt=""></a>
                         </div>
                     </div>
                     <div class="col-lg-10 col-6 text-right position-static">
@@ -463,7 +482,7 @@
                 <div class="row">
                     <div class="col-sm-7">
                         <p class="text-left">© Copyrights 2019 {{ $settings->site_name }}. All rights reserved.</p>
-                    </div>  
+                    </div>
                 </div>
             </div>
         </div>
